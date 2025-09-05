@@ -1,0 +1,3 @@
+../Core/Src/I2C.c:10:7:MX_I2C1_Init	2
+../Core/Src/I2C.c:33:6:HAL_I2C_SlaveRxCpltCallback	1
+../Core/Src/I2C.c:37:6:HAL_I2C_ErrorCallback	2

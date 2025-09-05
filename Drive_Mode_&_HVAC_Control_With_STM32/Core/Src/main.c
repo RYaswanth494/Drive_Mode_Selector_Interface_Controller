@@ -1,0 +1,67 @@
+#include"main.h"
+#include"system_clock_init.h"
+#include"uart.h"
+#include"can.h"
+#include"sys_tick.h"
+#include"task_scheduler.h"
+#include"Blower.h"
+#include"Condensor.h"
+#include"I2C.h"
+#include"Motor_Control_uint_pins.h"
+CAN_FRAME frame;
+I2C_HandleTypeDef hi2c1;
+extern uint8_t I2C_RX_FLAG,data[1];
+void clock_print_status(){
+    uart_printf("\r\n=====================================\r\n");
+    uart_printf("EVA DRIVE_MODE_SELECTOR & HVAC \r\n");
+    uart_printf("=====================================\r\n");
+    uart_printf("System Clock: %lu MHz\r\n", get_SYSCLK_freq() / 1000000);
+    uart_printf("APB1 Clock: %lu MHz\r\n", get_APB1_freq() / 1000000);
+    uart_printf("APB2 Clock: %lu MHz\r\n", get_APB2_freq() / 1000000);
+    uart_printf("=====================================\r\n");
+}
+int main(){
+	HAL_Init();
+	system_clock_init_to_72MHZ();
+	if(uart_init(115200)==RY_NOT_OK){
+	  Error_Handler();
+	}
+	clock_print_status();
+    uart_printf("UART1 initialization is ok ,baud_baudrate in kbps %d:\r\n", 115200);
+    uart_printf("=========================================================\r\n");
+    systick_init(1000);
+    uart_printf("systick clock initialized for milli second ");
+    uart_printf("=========================================================\r\n");
+	if(can_init(500000)==RY_NOT_OK){
+      uart_printf("CAN initialization is NOT oK\r\n");
+	  uart_printf("======================================================\r\n");
+	  Error_Handler();
+	}
+    uart_printf("CAN initialization is ok ,baud_baudrate in %d kbps:\r\n", 500);
+    uart_printf("=========================================================\r\n");
+    Init_tasks();
+    uart_printf("Task schedular is initialized\r\n");
+    uart_printf("=========================================================\r\n");
+    Blower_Relay_Pins_Init();
+    uart_printf("Blower pins are initialized PIN12=%d PIN13=%d PIN14=%d\r\n",(GPIOB->IDR>>12&1),(GPIOB->IDR>>13&1),(GPIOB->IDR>>14&1));
+    uart_printf("=========================================================\r\n");
+    Condensor_Relay_Pins_Init();
+    uart_printf("Condensor pins are initialized PIN15=%d \r\n",(GPIOB->IDR>>15&1));
+    uart_printf("=========================================================\r\n");
+    Motor_control_pins_init();
+    uart_printf("Motor_control pins are initialized PIN0=%d PIN1=%d  PIN3=%d PIN5=%d\r\n",(GPIOB->IDR>>0&1),(GPIOB->IDR>>1&1),(GPIOB->IDR>>3&1),(GPIOB->IDR>>5&1));
+    uart_printf("=========================================================\r\n");
+    MX_I2C1_Init();
+    while(1){
+    	if(I2C_RX_FLAG){
+    		I2C_RX_FLAG=0;
+            HAL_I2C_Slave_Receive_IT(&hi2c1, data, 1);
+    		uart_printf("%c",data[0]);
+        }
+    }
+}
+
+
+void Error_Handler(void)
+{
+}
