@@ -6,7 +6,7 @@
  */
 
 #include"extern_file_declarations.h"
-uint8_t I2C_RX_FLAG=0,data[1];
+uint8_t I2C_RX_FLAG=0,data[2];
  void MX_I2C1_Init(void)
 {
 
@@ -28,11 +28,12 @@ uint8_t I2C_RX_FLAG=0,data[1];
   {
     Error_Handler();
   }
-  HAL_I2C_Slave_Receive_IT(&hi2c1, data, 1);
+  HAL_I2C_Slave_Receive_IT(&hi2c1, data, 2);
 }
 void HAL_I2C_SlaveRxCpltCallback(I2C_HandleTypeDef *hi2c)
 {
 	I2C_RX_FLAG=1;
+    HAL_I2C_Slave_Receive_IT(&hi2c1, data, 2);
 }
 void HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c)
 {
@@ -42,7 +43,7 @@ void HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c)
         __HAL_RCC_I2C1_RELEASE_RESET();
 
         MX_I2C1_Init();  // Re-init peripheral
-        HAL_I2C_Slave_Receive_IT(&hi2c1, data, 1);
+        HAL_I2C_Slave_Receive_IT(&hi2c1, data, 2);
     }
 }
 

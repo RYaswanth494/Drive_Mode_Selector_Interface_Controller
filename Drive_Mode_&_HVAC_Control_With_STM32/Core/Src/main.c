@@ -8,9 +8,9 @@
 #include"Condensor.h"
 #include"I2C.h"
 #include"Motor_Control_uint_pins.h"
+#include"process.h"
 CAN_FRAME frame;
 I2C_HandleTypeDef hi2c1;
-extern uint8_t I2C_RX_FLAG,data[1];
 void clock_print_status(){
     uart_printf("\r\n=====================================\r\n");
     uart_printf("EVA DRIVE_MODE_SELECTOR & HVAC \r\n");
@@ -52,12 +52,9 @@ int main(){
     uart_printf("Motor_control pins are initialized PIN0=%d PIN1=%d  PIN3=%d PIN5=%d\r\n",(GPIOB->IDR>>0&1),(GPIOB->IDR>>1&1),(GPIOB->IDR>>3&1),(GPIOB->IDR>>5&1));
     uart_printf("=========================================================\r\n");
     MX_I2C1_Init();
+    Register_task(50,Drive_mode_state);
     while(1){
-    	if(I2C_RX_FLAG){
-    		I2C_RX_FLAG=0;
-            HAL_I2C_Slave_Receive_IT(&hi2c1, data, 1);
-    		uart_printf("%c",data[0]);
-        }
+    	Run_all_tasks();
     }
 }
 

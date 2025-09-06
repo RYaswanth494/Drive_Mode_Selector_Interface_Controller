@@ -60,8 +60,8 @@ all: main-build
 main-build: HVAC_CONTROL_WITH_STM32.elf secondary-outputs
 
 # Tool invocations
-HVAC_CONTROL_WITH_STM32.elf HVAC_CONTROL_WITH_STM32.map: $(OBJS) $(USER_OBJS) C:\Users\MadaYaswanth\STM32CubeIDE\workspace_1.19.0\HVAC_CONTROL_WITH_STM32\STM32F103CBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "HVAC_CONTROL_WITH_STM32.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\MadaYaswanth\STM32CubeIDE\workspace_1.19.0\HVAC_CONTROL_WITH_STM32\STM32F103CBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="HVAC_CONTROL_WITH_STM32.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+HVAC_CONTROL_WITH_STM32.elf HVAC_CONTROL_WITH_STM32.map: $(OBJS) $(USER_OBJS) C:\Users\MadaYaswanth\STM32CubeIDE\Drive_Mode_Selector_Interface_Controller\Drive_Mode_&_HVAC_Control_With_STM32\STM32F103CBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "HVAC_CONTROL_WITH_STM32.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\MadaYaswanth\STM32CubeIDE\Drive_Mode_Selector_Interface_Controller\Drive_Mode_&_HVAC_Control_With_STM32\STM32F103CBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="HVAC_CONTROL_WITH_STM32.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

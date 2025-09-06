@@ -44,4 +44,12 @@ extern void Blower_Relay_Pins_Init();
 extern void Condensor_Relay_Pins_Init();
 extern void Motor_control_pins_init();
 extern I2C_HandleTypeDef hi2c1;
+
+#define PB0_REVERSE 0
+#define PB1_NEUTRAL 1
+#define PB3_DRIVE 3
+#define PB5_SPORT 5
+extern void Drive_mode_state();
+extern uint8_t I2C_RX_FLAG,data[2];
+
 #endif /* INC_EXTERN_FILE_DECLARATIONS_H_ */
