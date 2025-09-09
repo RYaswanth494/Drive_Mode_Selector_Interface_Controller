@@ -6,8 +6,11 @@
  */
 
 #include"main.h"
-extern void uart_printf(const char *format, ...);
-extern uint32_t get_APB1_freq();
+#include"can.h"
+#include"uart.h"
+#include"system_clock_init.h"
+
+
 typedef struct {
     uint16_t prescaler;
     uint32_t tseg1;
@@ -101,4 +104,6 @@ void send_can(CAN_FRAME frame){
 	 }
 	CAN1->sTxMailBox[mail_box].TIR |= (1<<0);
 	}
+void can_set_filter(uint32_t *std_ids,uint32_t *ext_ids ){
 
+}

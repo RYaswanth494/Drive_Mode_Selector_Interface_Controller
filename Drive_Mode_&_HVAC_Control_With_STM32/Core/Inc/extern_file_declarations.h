@@ -11,6 +11,7 @@
 
 extern STATUS can_init(uint32_t Baud_Rate);
 extern void send_can(CAN_FRAME can_frame);
+extern void can_set_filter(uint32_t *std_ids,uint32_t *ext_ids );
 extern void systick_init(uint32_t ticks_per_sec);
 extern STATUS system_clock_init_to_72MHZ(void);
 extern uint32_t get_SYSCLK_freq(void);

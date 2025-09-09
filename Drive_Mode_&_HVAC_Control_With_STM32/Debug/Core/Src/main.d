@@ -25,7 +25,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Core/Inc/system_clock_init.h ../Core/Inc/main.h ../Core/Inc/uart.h \
  ../Core/Inc/can.h ../Core/Inc/sys_tick.h ../Core/Inc/task_scheduler.h \
  ../Core/Inc/Blower.h ../Core/Inc/Condensor.h ../Core/Inc/I2C.h \
- ../Core/Inc/Motor_Control_uint_pins.h ../Core/Inc/process.h
+ ../Core/Inc/Motor_Control_uint_pins.h ../Core/Inc/process.h \
+ ../Core/Inc/MCU_ELECTROCATALYST_MESSAGES.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
 ../Core/Inc/stm32f1xx_hal_conf.h:
@@ -61,3 +62,4 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Core/Inc/I2C.h:
 ../Core/Inc/Motor_Control_uint_pins.h:
 ../Core/Inc/process.h:
+../Core/Inc/MCU_ELECTROCATALYST_MESSAGES.h:
