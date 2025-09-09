@@ -1,4 +1,4 @@
 ../Core/Src/main.c:15:6:clock_print_status	1
-../Core/Src/main.c:24:6:can_ids_configure	1
+../Core/Src/main.c:25:6:can_ids_filter_configure	1
 ../Core/Src/main.c:45:5:main	3
-../Core/Src/main.c:85:6:Error_Handler	1
+../Core/Src/main.c:87:6:Error_Handler	1

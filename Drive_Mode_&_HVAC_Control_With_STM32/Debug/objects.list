@@ -1,6 +1,7 @@
 "./Core/Src/Blower.o"
 "./Core/Src/Debug.o"
 "./Core/Src/I2C.o"
+"./Core/Src/MCU_ELECTROCATALYST.o"
 "./Core/Src/MCU_ELECTROCATALYST_MESSAGES.o"
 "./Core/Src/Motor_control_Pins.o"
 "./Core/Src/can.o"

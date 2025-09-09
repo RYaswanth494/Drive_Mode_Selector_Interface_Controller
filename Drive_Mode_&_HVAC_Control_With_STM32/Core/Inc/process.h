@@ -9,5 +9,5 @@
 #define INC_PROCESS_H_
 
 void Drive_mode_state();
-
+void process_can_messages(void);
 #endif /* INC_PROCESS_H_ */

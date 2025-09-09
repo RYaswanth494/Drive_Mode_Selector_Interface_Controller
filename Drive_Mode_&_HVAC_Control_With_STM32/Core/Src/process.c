@@ -6,7 +6,11 @@
  */
 
 #include"extern_file_declarations.h"
+#include"can.h"
+#include"MCU_ELECTROCATLYST.h"
+extern Matel_MCU_Messages_t Mcu_frame;
 
+#include"process.h"
 /*
  * Master (M5Dial)                Slave (STM32)                   Output (GPIO)
       |                              |                               |
@@ -48,4 +52,13 @@ void Drive_mode_state(){
 	    }
 		}
 	}
+}
+void process_can_messages(void)
+{
+   can_frame_t rx_frame;
+
+   while (can_recv_bulk( &rx_frame, 1) > 0)
+   {
+       matel_mcu_process_can_frame(&rx_frame);
+   }
 }

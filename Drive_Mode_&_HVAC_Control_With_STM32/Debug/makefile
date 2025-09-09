@@ -52,6 +52,9 @@ default.size.stdout \
 OBJDUMP_LIST += \
 HVAC_CONTROL_WITH_STM32.list \
 
+OBJCOPY_HEX += \
+HVAC_CONTROL_WITH_STM32.hex \
+
 
 # All Target
 all: main-build
@@ -60,8 +63,8 @@ all: main-build
 main-build: HVAC_CONTROL_WITH_STM32.elf secondary-outputs
 
 # Tool invocations
-HVAC_CONTROL_WITH_STM32.elf HVAC_CONTROL_WITH_STM32.map: $(OBJS) $(USER_OBJS) C:\Users\MadaYaswanth\STM32CubeIDE\Drive_Mode_Selector_Interface_Controller\Drive_Mode_&_HVAC_Control_With_STM32\STM32F103CBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "HVAC_CONTROL_WITH_STM32.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\MadaYaswanth\STM32CubeIDE\Drive_Mode_Selector_Interface_Controller\Drive_Mode_&_HVAC_Control_With_STM32\STM32F103CBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="HVAC_CONTROL_WITH_STM32.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+HVAC_CONTROL_WITH_STM32.elf HVAC_CONTROL_WITH_STM32.map: $(OBJS) $(USER_OBJS) F:\Drive_ode\Drive_Mode_Selector_Interface_Controller\Drive_Mode_&_HVAC_Control_With_STM32\STM32F103CBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "HVAC_CONTROL_WITH_STM32.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"F:\Drive_ode\Drive_Mode_Selector_Interface_Controller\Drive_Mode_&_HVAC_Control_With_STM32\STM32F103CBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="HVAC_CONTROL_WITH_STM32.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -75,12 +78,17 @@ HVAC_CONTROL_WITH_STM32.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TO
 	@echo 'Finished building: $@'
 	@echo ' '
 
+HVAC_CONTROL_WITH_STM32.hex: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objcopy  -O ihex $(EXECUTABLES) "HVAC_CONTROL_WITH_STM32.hex"
+	@echo 'Finished building: $@'
+	@echo ' '
+
 # Other Targets
 clean:
-	-$(RM) HVAC_CONTROL_WITH_STM32.elf HVAC_CONTROL_WITH_STM32.list HVAC_CONTROL_WITH_STM32.map default.size.stdout
+	-$(RM) HVAC_CONTROL_WITH_STM32.elf HVAC_CONTROL_WITH_STM32.hex HVAC_CONTROL_WITH_STM32.list HVAC_CONTROL_WITH_STM32.map default.size.stdout
 	-@echo ' '
 
-secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)
+secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_HEX)
 
 fail-specified-linker-script-missing:
 	@echo 'Error: Cannot find the specified linker script. Check the linker settings in the build configuration.'

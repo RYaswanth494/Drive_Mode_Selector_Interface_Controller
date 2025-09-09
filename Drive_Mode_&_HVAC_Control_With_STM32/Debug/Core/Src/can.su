@@ -1,4 +1,6 @@
 ../Core/Src/can.c:22:8:set_baudrate	2064	static
 ../Core/Src/can.c:54:8:can_init	16	static
 ../Core/Src/can.c:74:6:send_can	40	static
-../Core/Src/can.c:107:6:can_set_filter	16	static
+../Core/Src/can.c:107:6:configure_can_filters	32	static
+../Core/Src/can.c:178:9:receive_can_data	24	static
+../Core/Src/can.c:240:10:can_recv_bulk	24	static

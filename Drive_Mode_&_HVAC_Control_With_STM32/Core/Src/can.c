@@ -104,6 +104,163 @@ void send_can(CAN_FRAME frame){
 	 }
 	CAN1->sTxMailBox[mail_box].TIR |= (1<<0);
 	}
-void can_set_filter(uint32_t *std_ids,uint32_t *ext_ids ){
+void configure_can_filters(const uint16_t *std_ids, uint8_t std_count,const uint32_t *ext_ids, uint8_t ext_count) {
 
+	 // Check if the total number of filters exceeds the available banks
+	    if ((std_count + ext_count) > CAN_FILTER_BANKS) {
+	        // In a real application, you would handle this error more gracefully
+	        return;
+	    }
+
+	    // 1. Enter filter initialization mode
+	    // Set the FINIT bit (Filter Initialization Mode)
+	    CAN1->FMR |= CAN_FMR_FINIT;
+
+	    uint8_t filter_bank_index = 0;
+
+	    // 2. Configure filters for Standard IDs and assign to FIFO0
+	    for (uint8_t i = 0; i < std_count; i++) {
+	        // Set filter mode to Mask mode
+	        CAN1->FM1R |= (1 << filter_bank_index);
+
+	        // Set filter scale to 16-bit
+	        CAN1->FS1R &= ~(1 << filter_bank_index);
+
+	        // Assign the filter to FIFO0 (clear the bit in FFA1R)
+	        CAN1->FFA1R &= ~(1 << filter_bank_index);
+
+	        // Configure the filter ID and mask registers
+	        // Standard ID is shifted left by 5 bits to align with the hardware format
+	        CAN1->sFilterRegister[filter_bank_index].FR1 = (std_ids[i] << 5);
+	        // The mask is set to accept only this specific ID
+	        CAN1->sFilterRegister[filter_bank_index].FR2 = (0x7FF << 5);
+
+	        // Enable the filter bank
+	        CAN1->FA1R |= (1 << filter_bank_index);
+
+	        filter_bank_index++;
+	    }
+
+	    // 3. Configure filters for Extended IDs and assign to FIFO1
+	    for (uint8_t i = 0; i < ext_count; i++) {
+	        // Set filter mode to Mask mode
+	        CAN1->FM1R |= (1 << filter_bank_index);
+
+	        // Set filter scale to 32-bit
+	        CAN1->FS1R |= (1 << filter_bank_index);
+
+	        // Assign the filter to FIFO1 (set the bit in FFA1R)
+	        CAN1->FFA1R |= (1 << filter_bank_index);
+
+	        // The 29-bit ID is split into two 16-bit registers
+	        // FR1: Contains the most significant 16 bits of the ID
+	        // FR2: Contains the least significant 16 bits of the ID
+	        CAN1->sFilterRegister[filter_bank_index].FR1 = (uint16_t)(ext_ids[i] >> 16);
+	        CAN1->sFilterRegister[filter_bank_index].FR2 = (uint16_t)ext_ids[i];
+
+	        // Enable the filter bank
+	        CAN1->FA1R |= (1 << filter_bank_index);
+
+	        filter_bank_index++;
+	    }
+
+	    // 4. Exit filter initialization mode to activate the filters
+	    CAN1->FMR &= ~CAN_FMR_FINIT;
+}
+/**
+ * @brief Checks and receives a CAN message from a specified FIFO.
+ * This function reads a CAN message from either FIFO0 or FIFO1 and populates
+ * the provided CanRxMsg structure.
+ * @param fifo_number The FIFO to check (0 for FIFO0, 1 for FIFO1).
+ * @param rx_message A pointer to the CanRxMsg structure to store the received data.
+ * @return 1 if a message was successfully received, 0 otherwise.
+ */
+uint8_t receive_can_data(uint8_t fifo_number, can_frame_t* rx_message) {
+
+    // Check if the requested FIFO has a pending message
+    if (fifo_number == 0) {
+        // Check FMP0 bit (FIFO Message Pending)
+        if ((CAN1->RF0R & CAN_RF0R_FMP0) == 0) {
+            return 0; // No message pending in FIFO0
+        }
+    } else if (fifo_number == 1) {
+        // Check FMP1 bit (FIFO Message Pending)
+        if ((CAN1->RF1R & CAN_RF1R_FMP1) == 0) {
+            return 0; // No message pending in FIFO1
+        }
+    } else {
+        return 0; // Invalid FIFO number
+    }
+
+    // Read message from the selected FIFO
+    volatile CAN_FIFOMailBox_TypeDef* rx_mailbox;
+    if (fifo_number == 0) {
+        rx_mailbox = &CAN1->sFIFOMailBox[0];
+    } else {
+        rx_mailbox = &CAN1->sFIFOMailBox[1];
+    }
+
+    // Read the ID and ID type
+    if ((rx_mailbox->RIR & CAN_RI0R_IDE) == 0) {
+        // Standard ID (11-bit)
+        rx_message->ide = 0;
+        rx_message->id = (rx_mailbox->RIR >> 21) & 0x7FF;
+    } else {
+        // Extended ID (29-bit)
+        rx_message->ide = 1;
+        rx_message->id = (rx_mailbox->RIR >> 3);
+    }
+
+    // Check for Remote Transmission Request (RTR)
+    rx_message->rtr = (rx_mailbox->RIR & CAN_RI0R_RTR) >> 1;
+
+    // Read Data Length Code (DLC)
+    rx_message->dlc = (rx_mailbox->RDTR & CAN_RDT0R_DLC) >> 0;
+
+    // Read the 8 bytes of data
+    // Use bit-wise operations to get the correct data
+    rx_message->data[0] = (uint8_t)rx_mailbox->RDLR;
+    rx_message->data[1] = (uint8_t)(rx_mailbox->RDLR >> 8);
+    rx_message->data[2] = (uint8_t)(rx_mailbox->RDLR >> 16);
+    rx_message->data[3] = (uint8_t)(rx_mailbox->RDLR >> 24);
+    rx_message->data[4] = (uint8_t)rx_mailbox->RDHR;
+    rx_message->data[5] = (uint8_t)(rx_mailbox->RDHR >> 8);
+    rx_message->data[6] = (uint8_t)(rx_mailbox->RDHR >> 16);
+    rx_message->data[7] = (uint8_t)(rx_mailbox->RDHR >> 24);
+
+    // Release the FIFO mailbox
+    if (fifo_number == 0) {
+        CAN1->RF0R |= CAN_RF0R_RFOM0;
+    } else {
+        CAN1->RF1R |= CAN_RF1R_RFOM1;
+    }
+
+    return 1; // Message received successfully
+}
+uint32_t can_recv_bulk(can_frame_t *frames, uint32_t max_frames)
+{
+    uint32_t frames_received = 0;
+
+    if ( frames == NULL || max_frames == 0)
+        return 0;
+
+    while (frames_received < max_frames)
+    {
+        if ((CAN1->RF0R & CAN_RF0R_FMP0) > 0)
+        {
+            if (receive_can_data(0,&frames[frames_received]))
+                frames_received++;
+        }
+        else if ((CAN1->RF1R & CAN_RF1R_FMP1)>0)
+        {
+            if (receive_can_data(1,&frames[frames_received]))
+                frames_received++;
+        }
+        else
+        {
+            break; // No messages in either FIFO
+        }
+    }
+
+    return frames_received;
 }

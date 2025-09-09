@@ -19,10 +19,11 @@ typedef struct {
     uint8_t  data[8];   /**< Data bytes */
 } can_frame_t;
 
+#define CAN_FILTER_BANKS 14
 
 STATUS can_init(uint32_t Baud_Rate);
 void send_can(CAN_FRAME can_frame);
-void can_set_filter(uint32_t *std_ids,uint32_t *ext_ids );
-
-
+void configure_can_filters(const uint16_t *std_ids, uint8_t std_count,const uint32_t *ext_ids, uint8_t ext_count);
+uint8_t receive_can_data(uint8_t fifo_number, can_frame_t* rx_message) ;
+uint32_t can_recv_bulk(can_frame_t *frames, uint32_t max_frames);
 #endif /* INC_CAN_H_ */
