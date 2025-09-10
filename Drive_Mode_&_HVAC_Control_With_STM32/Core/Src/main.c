@@ -79,7 +79,6 @@ int main(){
     Register_task(100,process_can_messages);
     while(1){
     	Run_all_tasks();
-
     }
 }
 

@@ -1,4 +1,4 @@
 ../Core/Src/main.c:15:6:clock_print_status	8	static
 ../Core/Src/main.c:25:6:can_ids_filter_configure	48	static
 ../Core/Src/main.c:45:5:main	16	static
-../Core/Src/main.c:87:6:Error_Handler	4	static
+../Core/Src/main.c:86:6:Error_Handler	4	static

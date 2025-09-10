@@ -1,4 +1,6 @@
 ../Core/Src/uart.c:15:8:uart_init	24	static
 ../Core/Src/uart.c:46:6:uart_print	16	static
 ../Core/Src/uart.c:53:6:uart_print_str	16	static
-../Core/Src/uart.c:59:6:uart_printf	112	static
+../Core/Src/uart.c:59:6:uart_send_double	128	static
+../Core/Src/uart.c:102:6:uart_send	24	static
+../Core/Src/uart.c:112:6:uart_printf	272	static

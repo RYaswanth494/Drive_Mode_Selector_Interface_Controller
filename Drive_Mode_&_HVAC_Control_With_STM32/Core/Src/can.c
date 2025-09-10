@@ -71,7 +71,7 @@ STATUS can_init(uint32_t Baud_Rate){
 	while (CAN1->MSR & CAN_MSR_INAK_Msk);  // Wait for Normal Mode
 	return RY_OK;
 }
-void send_can(CAN_FRAME frame){
+void send_can(can_frame_t frame){
 	uint32_t tme_mask = CAN1->TSR & (CAN_TSR_TME0 | CAN_TSR_TME1 | CAN_TSR_TME2);
 	int mail_box = -1;
     if (tme_mask & CAN_TSR_TME0) {
@@ -82,14 +82,12 @@ void send_can(CAN_FRAME frame){
         mail_box = 2;
     }
 	CAN1->sTxMailBox[mail_box].TIR = 0x00000000;
-	switch(frame.id_type)
-	{
-		case 0:
-			CAN1->sTxMailBox[mail_box].TIR |= (frame.id<<21);
-			break;
-		case 1:
-			CAN1->sTxMailBox[mail_box].TIR |= (frame.id<<3)|(1<<2);
-			break;
+	if(frame.ide==0){
+		CAN1->sTxMailBox[mail_box].TIR |= (frame.id<<21);
+
+	}else{
+		CAN1->sTxMailBox[mail_box].TIR |= (frame.id<<3)|(1<<2);
+
 	}
 	CAN1->sTxMailBox[mail_box].TDTR &= ~(0xF<<0);
 	CAN1->sTxMailBox[mail_box].TDTR |= (frame.dlc<<0);
@@ -177,20 +175,20 @@ void configure_can_filters(const uint16_t *std_ids, uint8_t std_count,const uint
  */
 uint8_t receive_can_data(uint8_t fifo_number, can_frame_t* rx_message) {
 
-    // Check if the requested FIFO has a pending message
-    if (fifo_number == 0) {
-        // Check FMP0 bit (FIFO Message Pending)
-        if ((CAN1->RF0R & CAN_RF0R_FMP0) == 0) {
-            return 0; // No message pending in FIFO0
-        }
-    } else if (fifo_number == 1) {
-        // Check FMP1 bit (FIFO Message Pending)
-        if ((CAN1->RF1R & CAN_RF1R_FMP1) == 0) {
-            return 0; // No message pending in FIFO1
-        }
-    } else {
-        return 0; // Invalid FIFO number
-    }
+//    // Check if the requested FIFO has a pending message
+//    if (fifo_number == 0) {
+//        // Check FMP0 bit (FIFO Message Pending)
+//        if ((CAN1->RF0R & CAN_RF0R_FMP0) == 0) {
+//            return 0; // No message pending in FIFO0
+//        }
+//    } else if (fifo_number == 1) {
+//        // Check FMP1 bit (FIFO Message Pending)
+//        if ((CAN1->RF1R & CAN_RF1R_FMP1) == 0) {
+//            return 0; // No message pending in FIFO1
+//        }
+//    } else {
+//        return 0; // Invalid FIFO number
+//    }
 
     // Read message from the selected FIFO
     volatile CAN_FIFOMailBox_TypeDef* rx_mailbox;

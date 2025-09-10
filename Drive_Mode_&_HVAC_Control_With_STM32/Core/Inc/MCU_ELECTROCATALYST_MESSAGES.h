@@ -9,7 +9,7 @@
 #define INC_MCU_ELECTROCATALYST_MESSAGES_H_
 
 #include<stdint.h>
-
+#include<stdbool.h>
 /*****************************************************************
  *                       CAN ID'S  RELATED MCU                   *
  ****************************************************************/
@@ -27,167 +27,144 @@
 /**********************************************************************
  *
  * ********************************************************************/
-#ifndef CAN_MESSAGES_H
-#define CAN_MESSAGES_H
+
 
 #include <stdint.h>
 
 // Typedef structures for each CAN message
-// --------------------------------------------------------------------------------
+#include <stdint.h>
 
+// Message: MCU_Stat_Two
 typedef struct {
-    float Trq_VCU_MAP;
-    float Trq_comp;
-    uint8_t uSD_CardStatus;
-    uint8_t CAN_ChargerConnectionStatus;
-    uint8_t Cell_1_BalanceStatus;
-    uint8_t Cell_2_BalanceStatus;
-    uint8_t Cell_3_BalanceStatus;
-    uint8_t Cell_4_BalanceStatus;
-    uint8_t Cell_5_BalanceStatus;
-    uint8_t Cell_6_BalanceStatus;
-    uint8_t Cell_7_BalanceStatus;
-    uint8_t Cell_8_BalanceStatus;
-    uint8_t Cell_9_BalanceStatus;
-    uint8_t Cell_10_BalanceStatus;
-    uint8_t Cell_11_BalanceStatus;
-    uint8_t Cell_12_BalanceStatus;
-    uint8_t Cell_13_BalanceStatus;
-    uint8_t Cell_14_BalanceStatus;
-    uint8_t Cell_15_BalanceStatus;
-    uint8_t Cell_16_BalanceStatus;
-    uint16_t BMS_CycleCount;
-    uint8_t FullChargeStatus;
-    uint8_t CellBalancingTimeoutStatus;
-    uint8_t SleepStatus;
-    uint8_t HandBreakStatus;
-    uint8_t ChargerPinDetection;
-    uint8_t SOC;
-    float BATTEERYCURRENT;
-} VECTOR_INDEPENDENT_SIG_MSG_t;
-
-typedef struct {
-    float MCU_Odometer_Val;
-    uint16_t MCU_Cap_Voltage;
-    int16_t MCU_Motor_RPM;
+double MCU_Odometer_Val; // scaled
+double MCU_VCU_State;
+double MCU_Motor_RPM;
 } MCU_Stat_Two_t;
 
+
+// Message: MCU_Fault_Code
 typedef struct {
-    uint8_t MCU_temp_cutoff;
-    uint8_t motor_temp_cutoff_fault;
-    uint8_t Motor_temp_warning;
-    uint8_t Motor_temp_sensor_fault;
-    uint8_t VCU_Brake_STG_Fault;
-    uint8_t VCU_Brake_STB_Fault;
-    uint8_t VCU_Throttle2_STG_Fault;
-    uint8_t VCU_Throttle2_STB_Fault;
-    uint8_t VCU_Throttle1_STB_Fault;
-    uint8_t VCU_Throttle1_STG_Fault;
-    uint8_t MCU_temp_warning;
-    uint8_t MCU_temp_sensor_fault;
-    uint8_t VCU_LowSOC_Fault;
-    uint8_t VCU_AuxVoltage_cutoff;
-    uint8_t VCU_AuxVoltage_Warning;
-    uint8_t MCU_Encoder_Fault;
-    uint8_t MCU_FET_OPEN_FAULT;
-    uint8_t MCU_WheelLock_Fault;
-    uint8_t MCU_SensorSupply_Fault;
-    uint8_t MCU_OverCurrent_Fault;
-    uint8_t MCU_DC_CurrSensor_Fault;
-    uint8_t MCU_Foc_Fault;
-    uint8_t MCU_PH_Sensor_Fault;
+double MCU_Fault_Code_0;
+double MCU_Fault_Code_1;
+double MCU_Fault_Code_2;
+double MCU_Fault_Code_3;
+double MCU_Fault_Code_4;
+double MCU_Fault_Code_5;
+double MCU_Fault_Code_6;
+double MCU_Fault_Code_7;
+double MCU_Fault_Code_8;
+double MCU_Fault_Code_9;
+double MCU_Fault_Code_10;
+double MCU_Fault_Code_11;
+double MCU_Fault_Code_12;
+double MCU_Fault_Code_13;
+double MCU_Fault_Code_14;
+double MCU_Fault_Code_15;
+double MCU_Fault_Code_16;
+double MCU_Fault_Code_17;
+double MCU_Fault_Code_18;
+double MCU_Fault_Code_19;
+double MCU_Fault_Code_20;
+double MCU_Fault_Code_21;
+double MCU_Fault_Code_22;
+double MCU_Fault_Code_23;
 } MCU_Fault_Code_t;
 
+
+// Message: HearthBeat
 typedef struct {
-    float Current;
-    float BatteryVoltage;
-    int8_t AvrgCellTemp;
-    float AvrgCellVolt;
-    uint8_t SOC;
-    uint8_t DisFET;
-    uint8_t ChgFET;
-    uint8_t BattLow;
-    uint8_t BattHigh;
-    uint8_t CellHigh;
-    uint8_t IGN_S;
-    uint8_t CellLow;
+double HeartBeat_Stat0;
+double HeartBeat_Stat1;
+double HeartBeat_Stat2;
+double HeartBeat_Stat3;
+double HeartBeat_Stat4;
+double HeartBeat_Stat5;
+double HeartBeat_Stat6;
+double HeartBeat_Stat7;
+double HeartBeat_Stat8;
+double HeartBeat_Stat9;
+double HeartBeat_Stat10;
+double HeartBeat_Stat11;
 } HearthBeat_t;
 
+
+// Message: CANFRAME3
 typedef struct {
-    float BATTERYCURRENT;
-    uint16_t MAXCHARGECURRENT;
-    uint8_t BATTERYSTATE;
-    uint16_t MAXDISCHARGECURRENT;
-    float BATTERYVOLTAGE;
+double CANFRAME3_sig0;
+double CANFRAME3_sig1;
+double CANFRAME3_sig2;
+double CANFRAME3_sig3;
+double CANFRAME3_sig4;
 } CANFRAME3_t;
-
+// Message: MCU_Stat_One
 typedef struct {
-    int8_t MCU_Motor_Temp;
-    int8_t MCU_PCB_Temp;
-    float MCU_RMS_Current;
-    uint8_t MCU_Drive_Mode;
-    uint8_t MCU_Speed_Kmph;
-    uint8_t MCU_Brake_perc;
-    uint8_t MCU_Throttle_perc;
+double MCU_Stat_One_sig0;
+double MCU_Stat_One_sig1;
+double MCU_Stat_One_sig2;
+double MCU_Stat_One_sig3;
+double MCU_Stat_One_sig4;
+double MCU_Stat_One_sig5;
+double MCU_Stat_One_sig6;
 } MCU_Stat_One_t;
-
+// Message: MCU_FAULT_two
 typedef struct {
-    uint8_t VCU_BFNRFault_St_B;
-    uint8_t VCU_DCDCEnableFault_St_B;
-    uint8_t VCU_ThrottleMismatch_St_B;
-    uint8_t VCU_LowSOC_Fault_St_B;
-    uint8_t VCU_LowSOC_Warning_St_B;
-    uint8_t VCU_AuxBatteryUV_Fault_St_B;
-    uint8_t VCU_AuxVoltageUV_Warning_St_B;
-    uint8_t VCU_OverSpeed_Fault_St_B;
-    uint8_t VCU_OverSpeed_Warning_St_B;
-    uint8_t VCU_Brake_STB_St_B;
-    uint8_t VCU_Brake_STG_St_B;
-    uint8_t VCU_Throttle2_STB_St_B;
-    uint8_t VCU_Throttle2_STG_St_B;
-    uint8_t VCU_Throttle1_STB_St_B;
-    uint8_t VCU_Throttle1_STG_St_B;
+double MCU_FAULT_two_sig0;
+double MCU_FAULT_two_sig1;
+double MCU_FAULT_two_sig2;
+double MCU_FAULT_two_sig3;
+double MCU_FAULT_two_sig4;
+double MCU_FAULT_two_sig5;
+double MCU_FAULT_two_sig6;
+double MCU_FAULT_two_sig7;
+double MCU_FAULT_two_sig8;
+double MCU_FAULT_two_sig9;
+double MCU_FAULT_two_sig10;
+double MCU_FAULT_two_sig11;
+double MCU_FAULT_two_sig12;
+double MCU_FAULT_two_sig13;
+double MCU_FAULT_two_sig14;
 } MCU_FAULT_two_t;
 
+
+// Message: MCU_FAULT_One
 typedef struct {
-    uint8_t HW_ASC_st_b;
-    uint8_t MCU_FET_OPEN_FAULT;
-    uint8_t MCU_DCDCCONV_Fault_St_B;
-    uint8_t MCU_BatteryUV_St_B;
-    uint8_t MCU_VCUFault_St_B;
-    uint8_t MCU_PhaseISensorFault_enum;
-    uint8_t MCU_SpeedFault_St_B;
-    uint8_t MCU_SensorSupplyFault_enum;
-    uint8_t MCU_PhFault_enum;
-    uint8_t MCU_PhaseSensorFault_enum;
-    uint8_t MCU_OverCurrentFault_enum;
-    uint8_t MCU_FOCFault_St_B;
-    uint8_t MCU_EncoderFault_enum;
-    uint8_t MCU_DC_ISensorFault_St_B;
-    uint8_t MCU_ChargerFault_St_B;
-    uint8_t MCU_BatOVFault_St_B;
+double MCU_FAULT_One_sig0;
+double MCU_FAULT_One_sig1;
+double MCU_FAULT_One_sig2;
+double MCU_FAULT_One_sig3;
+double MCU_FAULT_One_sig4;
+double MCU_FAULT_One_sig5;
+double MCU_FAULT_One_sig6;
+double MCU_FAULT_One_sig7;
+double MCU_FAULT_One_sig8;
+double MCU_FAULT_One_sig9;
+double MCU_FAULT_One_sig10;
+double MCU_FAULT_One_sig11;
+double MCU_FAULT_One_sig12;
+double MCU_FAULT_One_sig13;
+double MCU_FAULT_One_sig14;
+double MCU_FAULT_One_sig15;
 } MCU_FAULT_One_t;
 
+
+// Message: MCU_POWER_One
 typedef struct {
-    float MCU_FinalRequestedTrq_Nm;
-    float MCU_DCCapVoltage_Act_V;
-    float MCU_EstTorqueVal_Nm;
-    int16_t MCU_MotorActSpeed_RPM;
-    float MCU_DCInstCurrent_Act_A;
+double power_sig0;
+double power_sig1;
+double power_sig2;
+double power_sig3;
+double power_sig4;
 } MCU_POWER_One_t;
 
-#endif
-// CAN_MESSAGES_H
-// Function prototypes for each CAN message decoder
-// --------------------------------------------------------------------------------
+// Prototypes for decode functions
+void decode_MCU_Stat_Two(const uint8_t *data, MCU_Stat_Two_t *out);
+void decode_MCU_Fault_Code(const uint8_t *data, MCU_Fault_Code_t *out);
+void decode_HearthBeat(const uint8_t *data, HearthBeat_t *out);
+void decode_CANFRAME3(const uint8_t *data, CANFRAME3_t *out);
+void decode_MCU_Stat_One(const uint8_t *data, MCU_Stat_One_t *out);
+void decode_MCU_FAULT_two(const uint8_t *data, MCU_FAULT_two_t *out);
+void decode_MCU_FAULT_One(const uint8_t *data, MCU_FAULT_One_t *out);
+void decode_MCU_POWER_One(const uint8_t *data, MCU_POWER_One_t *out);
 
-void decode_VECTOR_INDEPENDENT_SIG_MSG_0xC0000000(const uint8_t *data, VECTOR_INDEPENDENT_SIG_MSG_t *msg);
-void decode_MCU_Stat_Two_0x98A96000(const uint8_t *data, MCU_Stat_Two_t *msg);
-void decode_MCU_Fault_Code_0xB3(const uint8_t *data, MCU_Fault_Code_t *msg);
-void decode_HearthBeat_0x98F40117(const uint8_t *data, HearthBeat_t *msg);
-void decode_CANFRAME3_0x3AA(const uint8_t *data, CANFRAME3_t *msg);
-void decode_MCU_Stat_One_0x98A92000(const uint8_t *data, MCU_Stat_One_t *msg);
-void decode_MCU_FAULT_two_0xAF(const uint8_t *data, MCU_FAULT_two_t *msg);
-void decode_MCU_FAULT_One_0xAE(const uint8_t *data, MCU_FAULT_One_t *msg);
-void decode_MCU_POWER_One_0XA1(const uint8_t *data, MCU_POWER_One_t *msg);
+
 #endif /* INC_MCU_ELECTROCATALYST_MESSAGES_H_ */

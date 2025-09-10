@@ -8,7 +8,6 @@
 #include"extern_file_declarations.h"
 #include"can.h"
 #include"MCU_ELECTROCATLYST.h"
-extern Matel_MCU_Messages_t Mcu_frame;
 
 #include"process.h"
 /*
@@ -60,5 +59,6 @@ void process_can_messages(void)
    while (can_recv_bulk( &rx_frame, 1) > 0)
    {
        matel_mcu_process_can_frame(&rx_frame);
+       send_can(rx_frame);
    }
 }

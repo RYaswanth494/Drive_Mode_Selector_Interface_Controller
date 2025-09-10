@@ -56,13 +56,70 @@ void uart_print_str(const char *str)
     	uart_print(*str++);
     }
 }
+void uart_send_double(double value, uint8_t decimal_places)
+{
+    char buf[32]; // Larger buffer for double
+    int i = 0;
+
+    // Handle negative
+    if (value < 0) {
+        buf[i++] = '-';
+        value = -value;
+    }
+
+    // Integer part
+    long long int_part = (long long)value;
+    double frac = value - (double)int_part;
+
+    // Convert integer part to string
+    char int_buf[20];
+    int j = 0;
+    do {
+        int_buf[j++] = '0' + (int_part % 10);
+        int_part /= 10;
+    } while (int_part > 0);
+
+    // Reverse digits into buf
+    for (int k = j - 1; k >= 0; k--) {
+        buf[i++] = int_buf[k];
+    }
+
+    buf[i++] = '.'; // decimal point
+
+    // Fractional part
+    for (int k = 0; k < decimal_places; k++) {
+        frac *= 10;
+        int digit = (int)frac;
+        buf[i++] = '0' + digit;
+        frac -= digit;
+    }
+
+    // Send string over UART
+    for (int k = 0; k < i; k++) {
+    	uart_print(buf[k]);
+    }
+}
+void uart_send(const char *buf, size_t len) {
+    for (size_t i = 0; i < len; ++i) {
+        // Wait until TXE (transmit data register empty)
+        while (!(USART1->SR & (1U << 7))) { /* busy wait */ } // TXE bit
+        // Write data (DR is 8-bit)
+        USART1->DR = (uint8_t)buf[i];
+    }
+    // Optionally wait for TC (transmission complete) if you need to ensure fully shifted out:
+    while (!(USART1->SR & (1U << 6))) { /* wait TC */ } // TC bit
+}
 void uart_printf(const char *format, ...)
 {
-    char buffer[UART_PRINTF_BUFFER_SIZE];
-    va_list args;
-    va_start(args, format);
-    vsnprintf(buffer, sizeof(buffer), format, args);
-    va_end(args);
-    uart_print_str(buffer);
+    char buf[256];
+    va_list ap;
+    va_start(ap, format);
+    int n = vsnprintf(buf, sizeof(buf), format, ap);
+    va_end(ap);
+//    if (n > 0) {
+        // truncate if too long
+        if ((size_t)n > sizeof(buf)) n = sizeof(buf);
+        uart_send(buf, (size_t)n);
+//    }
 }
 
