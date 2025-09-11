@@ -14,15 +14,15 @@
  *                       CAN ID'S  RELATED MCU                   *
  ****************************************************************/
 /*---------------------------STD_ID's---------------------------*/
-#define Matel_MCU_POWER_CAN_STD_ID_A1                0xA1  //MCU to CONTROLLER( decimal 161)
+#define Matel_MCU_POWER_CAN_STD_ID_A1                0x0A1  //MCU to CONTROLLER( decimal 161)
 #define Matel_MCU_FAULT_one_CAN_STD_ID_AE            0xAE  //MCU to CONTROLLER(decimal 174)
 #define Matel_MCU_FAULT_two_CAN_STD_ID_AF            0xAF  //MCU to CONTROLLER(decimal175)
 #define Matel_MCU_Fault_Code_CAN_STD_ID_B3           0xB3  //MCU to CONTROLLER(decimal 179)
 #define Matel_CANFRAME3_CAN_STD_ID_3AA               0x3AA  //MCU to CONTROLLER(decimal 938)
 /*---------------------------EXTD_ID's---------------------------*/
-#define Matel_MCU_Stat_One_CAN_EXTD_ID_0x98A92000       0x98A92000 //MCU to CONTROLLER(decimal 2552647744)
-#define Matel_MCU_Stat_Two_CAN_EXTD_ID_0x98A96000       0x98A96000 //MCU to CONTROLLER(decimal 2552713280)
-#define Matel_MCU_HearthBeat_CAN_EXTD_ID_0x98F40117     0x98F40117 //MCU to CONTROLLER(decimal 2559980119)
+#define Matel_MCU_Stat_One_CAN_EXTD_ID_18265040       0x18265040 //MCU to CONTROLLER(decimal 2552647744)
+#define Matel_MCU_Stat_Two_CAN_EXTD_ID_18275040       0x18275040 //MCU to CONTROLLER(decimal 2552713280)
+#define Matel_MCU_HearthBeat_CAN_EXTD_ID_18963257     0x18963257 //MCU to CONTROLLER(decimal 2559980119)
 #define Matel_VECTOR__INDEPENDENT_SIG_MSG_0xC0000000    0xC0000000
 /**********************************************************************
  *
@@ -98,13 +98,13 @@ double CANFRAME3_sig4;
 } CANFRAME3_t;
 // Message: MCU_Stat_One
 typedef struct {
-double MCU_Stat_One_sig0;
-double MCU_Stat_One_sig1;
+int MCU_Stat_One_sig0;
+int MCU_Stat_One_sig1;
 double MCU_Stat_One_sig2;
-double MCU_Stat_One_sig3;
-double MCU_Stat_One_sig4;
-double MCU_Stat_One_sig5;
-double MCU_Stat_One_sig6;
+int MCU_Stat_One_sig3;
+int MCU_Stat_One_sig4;
+int MCU_Stat_One_sig5;
+int MCU_Stat_One_sig6;
 } MCU_Stat_One_t;
 // Message: MCU_FAULT_two
 typedef struct {
@@ -152,7 +152,7 @@ typedef struct {
 double power_sig0;
 double power_sig1;
 double power_sig2;
-double power_sig3;
+int power_sig3;
 double power_sig4;
 } MCU_POWER_One_t;
 

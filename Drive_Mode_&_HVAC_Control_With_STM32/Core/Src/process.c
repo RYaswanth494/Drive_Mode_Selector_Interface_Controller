@@ -8,25 +8,7 @@
 #include"extern_file_declarations.h"
 #include"can.h"
 #include"MCU_ELECTROCATLYST.h"
-
 #include"process.h"
-/*
- * Master (M5Dial)                Slave (STM32)                   Output (GPIO)
-      |                              |                               |
-      |--[Rotate/Select Mode]------->|                               |
-      |                              |                               |
-      |                              |--[Wait for debounce 50 ms]-->|  Ignore noise
-      |                              |                               |
-      |                              |--[Prepare 4-byte data + CRC32]|
-      |                              |                               |
-      |--[I2C Send 4 bytes + CRC32]->|                               |
-      |                              |                               |
-      |                              |--[Receive I2C]--------------->|  ~180 µs
-      |                              |--[Verify CRC32]-------------->|  ~5 µs
-      |                              |--[Parse Command]-------------->|  ~1 µs
-      |                              |--[Update GPIO ODR]------------>|  Output changes
-      |                              |                               |
- * */
 uint8_t crc8(uint8_t data) {
     uint8_t crc = 0x00; // initial value
     for (uint8_t i = 0; i < 8; i++) {
@@ -56,9 +38,16 @@ void process_can_messages(void)
 {
    can_frame_t rx_frame;
 
-   while (can_recv_bulk( &rx_frame, 1) > 0)
+   if (CAN_MessagePending(0))
    {
+	   can_rx(&rx_frame,0);
        matel_mcu_process_can_frame(&rx_frame);
-       send_can(rx_frame);
+//       send_can(rx_frame);
+   }
+   if (CAN_MessagePending(1))
+   {
+	   can_rx(&rx_frame,1);
+       matel_mcu_process_can_frame(&rx_frame);
+//       send_can(rx_frame);
    }
 }

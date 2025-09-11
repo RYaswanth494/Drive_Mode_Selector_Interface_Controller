@@ -23,7 +23,9 @@ typedef struct {
 
 STATUS can_init(uint32_t Baud_Rate);
 void send_can(can_frame_t can_frame);
-void configure_can_filters(const uint16_t *std_ids, uint8_t std_count,const uint32_t *ext_ids, uint8_t ext_count);
+void configure_can_filters(const uint32_t *std_ids, uint8_t std_count,const uint32_t *ext_ids, uint8_t ext_count);
 uint8_t receive_can_data(uint8_t fifo_number, can_frame_t* rx_message) ;
 uint32_t can_recv_bulk(can_frame_t *frames, uint32_t max_frames);
+uint8_t CAN_MessagePending(uint8_t fifo);
+uint8_t can_rx(can_frame_t *RxMessage,uint8_t fifo_number);
 #endif /* INC_CAN_H_ */

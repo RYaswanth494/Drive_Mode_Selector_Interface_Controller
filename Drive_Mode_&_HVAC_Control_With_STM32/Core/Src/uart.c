@@ -116,10 +116,10 @@ void uart_printf(const char *format, ...)
     va_start(ap, format);
     int n = vsnprintf(buf, sizeof(buf), format, ap);
     va_end(ap);
-//    if (n > 0) {
+    if (n > 0) {
         // truncate if too long
         if ((size_t)n > sizeof(buf)) n = sizeof(buf);
         uart_send(buf, (size_t)n);
-//    }
+    }
 }
 

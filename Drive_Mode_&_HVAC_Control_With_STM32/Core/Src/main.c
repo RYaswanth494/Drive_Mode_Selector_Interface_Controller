@@ -24,7 +24,7 @@ void clock_print_status(){
 \
 void can_ids_filter_configure(){
     /* Standard IDs array - terminated with 0x0000 */
-    uint16_t standard_rx_ids[] = {
+    uint32_t standard_rx_ids[] = {
     		Matel_MCU_POWER_CAN_STD_ID_A1,
 			Matel_MCU_FAULT_one_CAN_STD_ID_AE,
 			Matel_MCU_FAULT_two_CAN_STD_ID_AF,
@@ -34,9 +34,9 @@ void can_ids_filter_configure(){
 
     /* Extended IDs array - terminated with 0x00000000 */
     uint32_t extended_rx_ids[] = {
-    		Matel_MCU_Stat_One_CAN_EXTD_ID_0x98A92000,
-			Matel_MCU_Stat_Two_CAN_EXTD_ID_0x98A96000,
-			Matel_MCU_HearthBeat_CAN_EXTD_ID_0x98F40117,
+    		Matel_MCU_Stat_One_CAN_EXTD_ID_18265040,
+			Matel_MCU_Stat_Two_CAN_EXTD_ID_18275040,
+			Matel_MCU_HearthBeat_CAN_EXTD_ID_18963257,
 			Matel_VECTOR__INDEPENDENT_SIG_MSG_0xC0000000
     };
     configure_can_filters(standard_rx_ids,sizeof(standard_rx_ids)/sizeof(standard_rx_ids[0]),extended_rx_ids,sizeof(extended_rx_ids)/sizeof(extended_rx_ids[0]));
@@ -75,8 +75,8 @@ int main(){
     uart_printf("Motor_control pins are initialized PIN0=%d PIN1=%d  PIN3=%d PIN5=%d\r\n",(GPIOB->IDR>>0&1),(GPIOB->IDR>>1&1),(GPIOB->IDR>>3&1),(GPIOB->IDR>>5&1));
     uart_printf("=========================================================\r\n");
     MX_I2C1_Init();
-    Register_task(50,Drive_mode_state);
-    Register_task(100,process_can_messages);
+//    Register_task(50,Drive_mode_state);
+    Register_task(20,process_can_messages);
     while(1){
     	Run_all_tasks();
     }

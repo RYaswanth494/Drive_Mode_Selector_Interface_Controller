@@ -1,6 +1,1 @@
-../Core/Src/MCU_ELECTROCATALYST.c:13:13:print_MCU_Stat_Two	40	static
-../Core/Src/MCU_ELECTROCATALYST.c:19:13:print_MCU_Fault_Code	32	static
-../Core/Src/MCU_ELECTROCATALYST.c:29:13:print_HearthBeat	184	static
-../Core/Src/MCU_ELECTROCATALYST.c:37:13:print_CANFRAME3	80	static
-../Core/Src/MCU_ELECTROCATALYST.c:41:13:print_MCU_POWER_One	80	static
-../Core/Src/MCU_ELECTROCATALYST.c:46:6:matel_mcu_process_can_frame	16	static
+../Core/Src/MCU_ELECTROCATALYST.c:14:6:matel_mcu_process_can_frame	16	static
