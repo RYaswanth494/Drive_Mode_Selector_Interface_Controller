@@ -11,7 +11,7 @@
 
 void Condensor_Relay_Pins_Init(){
     RCC->APB2ENR |= RCC_APB2ENR_IOPBEN;
-    GPIOB->CRH&=~((0xFF<<28));
+    GPIOB->CRH&=~((0xF<<28));
     GPIOB->CRH|=((0x3<<28));
     GPIOB->ODR|=((1<<PB15_CONDENSOR));
 }

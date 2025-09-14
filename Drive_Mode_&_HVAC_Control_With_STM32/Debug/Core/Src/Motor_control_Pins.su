@@ -1,1 +1,2 @@
-../Core/Src/Motor_control_Pins.c:14:6:Motor_control_pins_init	4	static
+../Core/Src/Motor_control_Pins.c:14:6:Motor_control_pins_init1	4	static
+../Core/Src/Motor_control_Pins.c:21:6:Motor_control_pins_init	4	static

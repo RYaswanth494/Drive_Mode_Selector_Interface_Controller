@@ -1,4 +1,5 @@
 #include"main.h"
+#include"process.h"
 #include"system_clock_init.h"
 #include"uart.h"
 #include"can.h"
@@ -10,7 +11,8 @@
 #include"Motor_Control_uint_pins.h"
 #include"process.h"
 #include"MCU_ELECTROCATALYST_MESSAGES.h"
-CAN_FRAME frame;
+#include"Drive_Selector_Switch.h"
+extern void matel_mcu_process_can_frame(can_frame_t *);
 I2C_HandleTypeDef hi2c1;
 void clock_print_status(){
     uart_printf("\r\n=====================================\r\n");
@@ -29,7 +31,6 @@ void can_ids_filter_configure(){
 			Matel_MCU_FAULT_one_CAN_STD_ID_AE,
 			Matel_MCU_FAULT_two_CAN_STD_ID_AF,
 			Matel_MCU_Fault_Code_CAN_STD_ID_B3,
-			Matel_CANFRAME3_CAN_STD_ID_3AA,
     };
 
     /* Extended IDs array - terminated with 0x00000000 */
@@ -42,9 +43,32 @@ void can_ids_filter_configure(){
     configure_can_filters(standard_rx_ids,sizeof(standard_rx_ids)/sizeof(standard_rx_ids[0]),extended_rx_ids,sizeof(extended_rx_ids)/sizeof(extended_rx_ids[0]));
     uart_printf("[INFO] Configuring CAN filters for CT4 MCU messages...\r\n");
 }
+void send_full_frame_over_uart( can_frame_t *f) {
+    uart_send((uint8_t*)f, sizeof(can_frame_t));
+}
+void send_id_data_only_over_uart(const can_frame_t *f) {
+    uint8_t buf[13];
+    /* send id always as 4 bytes (LE) so ESP32 can read little-endian uint32_t */
+    buf[3] = (uint8_t)(f->id & 0xFF);
+    buf[2] = (uint8_t)((f->id >> 8) & 0xFF);
+    buf[1] = (uint8_t)((f->id >> 16) & 0xFF);
+    buf[0] = (uint8_t)((f->id >> 24) & 0xFF);
+    buf[4] = f->dlc;
+    /* copy 8 data bytes (if dlc<8 you still send 8 bytes - zeros ok) */
+    for (int i = 0; i < 8; ++i) buf[5 + i] = f->data[i];
+    uart_send1(buf, sizeof(buf)); // 13 bytes
+}
+#define PB0_REVERSE 0
+#define PB1_NEUTRAL 1
+#define PB3_DRIVE 3
 int main(){
 	HAL_Init();
 	system_clock_init_to_72MHZ();
+	if(uart3_Init(115200)==RY_NOT_OK){
+	  Error_Handler();
+	}
+    uart_printf("UART3 initialization is ok ,baud_baudrate in kbps %d:\r\n", 115200);
+    uart_printf("=========================================================\r\n");
 	if(uart_init(115200)==RY_NOT_OK){
 	  Error_Handler();
 	}
@@ -74,11 +98,38 @@ int main(){
     Motor_control_pins_init();
     uart_printf("Motor_control pins are initialized PIN0=%d PIN1=%d  PIN3=%d PIN5=%d\r\n",(GPIOB->IDR>>0&1),(GPIOB->IDR>>1&1),(GPIOB->IDR>>3&1),(GPIOB->IDR>>5&1));
     uart_printf("=========================================================\r\n");
-    MX_I2C1_Init();
+    Switch_Pins_int();
+//    MX_I2C1_Init();
 //    Register_task(50,Drive_mode_state);
-    Register_task(20,process_can_messages);
+//    Register_task(20,process_can_messages);
+    switch_state_t last_state,cur_state;
+     last_state=Switch_update();
     while(1){
-    	Run_all_tasks();
+//    	Run_all_tasks();
+    	   can_frame_t rx_frame;
+    	   if (CAN_MessagePending(0))
+    	   {
+    		   can_rx(&rx_frame,0);
+    		   send_id_data_only_over_uart(&rx_frame);
+    	       matel_mcu_process_can_frame(&rx_frame);
+    	   }
+    	   if (CAN_MessagePending(1))
+    	   {
+    		   can_rx(&rx_frame,1);
+    		   send_id_data_only_over_uart(&rx_frame);
+    	       matel_mcu_process_can_frame(&rx_frame);
+    	   }
+    	cur_state=Switch_update();
+    	if(cur_state!=last_state){
+    		last_state=cur_state;
+    	    GPIOB->ODR |= ((1<<PB0_REVERSE) | (1<<PB1_NEUTRAL) | (1<<PB3_DRIVE));
+    	    switch (cur_state) {
+    	        case 2: GPIOB->ODR &=~ (1<<PB0_REVERSE); break;
+    	        case 0: GPIOB->ODR &=~ (1<<PB1_NEUTRAL); break;
+    	        case 1: GPIOB->ODR &=~ (1<<PB3_DRIVE);   break;
+    	    }
+    		uart_printf(" button=%d :\n",cur_state);
+    	}
     }
 }
 

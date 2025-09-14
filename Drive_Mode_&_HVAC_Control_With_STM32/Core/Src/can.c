@@ -49,16 +49,20 @@ STATUS set_baudrate(uint32_t Baud_Rate){
         }
     }
     CAN1->BTR|=((table[0].prescaler-1)<<0)|((table[0].sjw-1)<<24)|((table[0].tseg1-1)<<16)|((table[0].tseg2-1)<<20);
-    return RY_OK;
+    return RY_OK;//0x001e0003
+}
+void Gpio_init(){
+    RCC->APB1ENR|=RCC_APB1ENR_CAN1EN;
+    RCC->APB2ENR|=RCC_APB2ENR_AFIOEN;
+    RCC->APB2ENR|=RCC_APB2ENR_IOPBEN;
+    GPIOB->CRH &= ~(0xF << 4); // Clear bits for PB9
+    GPIOB->CRH &= ~(0xF << 0); // Clear bits for PB8
+    GPIOB->CRH|=(1<<2);
+    GPIOB->CRH|=(0Xb0);
+    AFIO->MAPR|=AFIO_MAPR_CAN_REMAP_REMAP2;
 }
 STATUS can_init(uint32_t Baud_Rate){
-    RCC->APB2ENR |= RCC_APB2ENR_IOPBEN | RCC_APB2ENR_AFIOEN;
-    RCC->APB1ENR |= RCC_APB1ENR_CAN1EN;
-    AFIO->MAPR |= AFIO_MAPR_CAN_REMAP_REMAP2;
-    GPIOB->CRH &= ~(0xF << 0);
-    GPIOB->CRH |=  (0x4 << 0);
-    GPIOB->CRH &= ~(0xF << 4);
-    GPIOB->CRH |=  (0xB << 4);
+	Gpio_init();
 	CAN1->MCR &= ~CAN_MCR_AWUM_Msk;
 	CAN1->MCR &= ~CAN_MCR_SLEEP_Msk;
 	CAN1->MCR |= CAN_MCR_INRQ_Msk;
@@ -69,19 +73,19 @@ STATUS can_init(uint32_t Baud_Rate){
 	}
 	CAN1->MCR &= ~(1<<0);  // CLEAR INQR BIT TO LEAVE INTILAIZE MODE=
 	while (CAN1->MSR & CAN_MSR_INAK_Msk);  // Wait for Normal Mode
-//	CAN1->FMR |= CAN_FMR_FINIT;       // Enter filter init mode
-//
-//	CAN1->FA1R = 0;                   // Disable all filters
-//	CAN1->FM1R = 0;                   // Identifier Mask mode
-//	CAN1->FS1R = 1;                   // 32-bit scale
-//	CAN1->FFA1R = 0;                  // Assign to FIFO0
-//
-//	CAN1->sFilterRegister[0].FR1 = 0x00000000;  // ID = 0
-//	CAN1->sFilterRegister[0].FR2 = 0x00000000;  // Mask = 0
-//
-//	CAN1->FA1R |= 1;                  // Enable filter 0
-//
-//	CAN1->FMR &= ~CAN_FMR_FINIT;
+	CAN1->FMR |= CAN_FMR_FINIT;       // Enter filter init mode
+
+	CAN1->FA1R = 0;                   // Disable all filters
+	CAN1->FM1R = 0;                   // Identifier Mask mode
+	CAN1->FS1R = 1;                   // 32-bit scale
+	CAN1->FFA1R = 0;                  // Assign to FIFO0
+
+	CAN1->sFilterRegister[0].FR1 = 0x00000000;  // ID = 0
+	CAN1->sFilterRegister[0].FR2 = 0x00000000;  // Mask = 0
+
+	CAN1->FA1R |= 1;                  // Enable filter 0
+
+	CAN1->FMR &= ~CAN_FMR_FINIT;
 	return RY_OK;
 }
 void send_can(can_frame_t frame){
@@ -197,6 +201,9 @@ void configure_can_filters(const uint32_t *std_ids, uint8_t std_cnt,const uint32
     // Leave filter init mode
     CAN1->FMR &= ~CAN_FMR_FINIT;
 }
+//void send_full_frame_over_uart( can_frame_t *f) {
+//    uart_send((uint8_t*)f, sizeof(can_frame_t));
+//}
 /**
  * @brief Checks and receives a CAN message from a specified FIFO.
  * This function reads a CAN message from either FIFO0 or FIFO1 and populates
@@ -236,6 +243,7 @@ uint8_t can_rx(can_frame_t *RxMessage,uint8_t fifo_number){
 
 		  }
 	  }
+//	  send_full_frame_over_uart(&RxMessage);
 	  if (fifo_number == 0)
 	  {
 		  CAN1->RF0R |= CAN_RF0R_RFOM0;

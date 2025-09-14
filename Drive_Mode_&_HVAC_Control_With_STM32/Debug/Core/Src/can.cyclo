@@ -1,7 +1,8 @@
 ../Core/Src/can.c:22:8:set_baudrate	10
-../Core/Src/can.c:54:8:can_init	3
-../Core/Src/can.c:87:6:send_can	7
-../Core/Src/can.c:118:6:configure_can_filters	7
-../Core/Src/can.c:208:9:CAN_MessagePending	2
-../Core/Src/can.c:216:9:can_rx	6
-../Core/Src/can.c:249:10:can_recv_bulk	8
+../Core/Src/can.c:54:6:Gpio_init	1
+../Core/Src/can.c:64:8:can_init	3
+../Core/Src/can.c:91:6:send_can	7
+../Core/Src/can.c:122:6:configure_can_filters	7
+../Core/Src/can.c:215:9:CAN_MessagePending	2
+../Core/Src/can.c:223:9:can_rx	6
+../Core/Src/can.c:257:10:can_recv_bulk	8

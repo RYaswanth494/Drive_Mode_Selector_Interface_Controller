@@ -18,7 +18,7 @@
 #define Matel_MCU_FAULT_one_CAN_STD_ID_AE            0xAE  //MCU to CONTROLLER(decimal 174)
 #define Matel_MCU_FAULT_two_CAN_STD_ID_AF            0xAF  //MCU to CONTROLLER(decimal175)
 #define Matel_MCU_Fault_Code_CAN_STD_ID_B3           0xB3  //MCU to CONTROLLER(decimal 179)
-#define Matel_CANFRAME3_CAN_STD_ID_3AA               0x3AA  //MCU to CONTROLLER(decimal 938)
+//#define Matel_CANFRAME3_CAN_STD_ID_3AA               0x3AA  //MCU to CONTROLLER(decimal 938)
 /*---------------------------EXTD_ID's---------------------------*/
 #define Matel_MCU_Stat_One_CAN_EXTD_ID_18265040       0x18265040 //MCU to CONTROLLER(decimal 2552647744)
 #define Matel_MCU_Stat_Two_CAN_EXTD_ID_18275040       0x18275040 //MCU to CONTROLLER(decimal 2552713280)
@@ -44,30 +44,30 @@ double MCU_Motor_RPM;
 
 // Message: MCU_Fault_Code
 typedef struct {
-double MCU_Fault_Code_0;
-double MCU_Fault_Code_1;
-double MCU_Fault_Code_2;
-double MCU_Fault_Code_3;
-double MCU_Fault_Code_4;
-double MCU_Fault_Code_5;
-double MCU_Fault_Code_6;
-double MCU_Fault_Code_7;
-double MCU_Fault_Code_8;
-double MCU_Fault_Code_9;
-double MCU_Fault_Code_10;
-double MCU_Fault_Code_11;
-double MCU_Fault_Code_12;
-double MCU_Fault_Code_13;
-double MCU_Fault_Code_14;
-double MCU_Fault_Code_15;
-double MCU_Fault_Code_16;
-double MCU_Fault_Code_17;
-double MCU_Fault_Code_18;
-double MCU_Fault_Code_19;
-double MCU_Fault_Code_20;
-double MCU_Fault_Code_21;
-double MCU_Fault_Code_22;
-double MCU_Fault_Code_23;
+	int MCU_Fault_Code_0;
+	int MCU_Fault_Code_1;
+	int MCU_Fault_Code_2;
+	int MCU_Fault_Code_3;
+	int MCU_Fault_Code_4;
+int MCU_Fault_Code_5;
+int MCU_Fault_Code_6;
+int MCU_Fault_Code_7;
+int MCU_Fault_Code_8;
+int MCU_Fault_Code_9;
+int MCU_Fault_Code_10;
+int MCU_Fault_Code_11;
+int MCU_Fault_Code_12;
+int MCU_Fault_Code_13;
+int MCU_Fault_Code_14;
+int MCU_Fault_Code_15;
+int MCU_Fault_Code_16;
+int MCU_Fault_Code_17;
+int MCU_Fault_Code_18;
+int MCU_Fault_Code_19;
+int MCU_Fault_Code_20;
+int MCU_Fault_Code_21;
+int MCU_Fault_Code_22;
+int MCU_Fault_Code_23;
 } MCU_Fault_Code_t;
 
 
@@ -108,42 +108,42 @@ int MCU_Stat_One_sig6;
 } MCU_Stat_One_t;
 // Message: MCU_FAULT_two
 typedef struct {
-double MCU_FAULT_two_sig0;
-double MCU_FAULT_two_sig1;
-double MCU_FAULT_two_sig2;
-double MCU_FAULT_two_sig3;
-double MCU_FAULT_two_sig4;
-double MCU_FAULT_two_sig5;
-double MCU_FAULT_two_sig6;
-double MCU_FAULT_two_sig7;
-double MCU_FAULT_two_sig8;
-double MCU_FAULT_two_sig9;
-double MCU_FAULT_two_sig10;
-double MCU_FAULT_two_sig11;
-double MCU_FAULT_two_sig12;
-double MCU_FAULT_two_sig13;
-double MCU_FAULT_two_sig14;
+	int MCU_FAULT_two_sig0;
+int MCU_FAULT_two_sig1;
+int MCU_FAULT_two_sig2;
+int MCU_FAULT_two_sig3;
+int MCU_FAULT_two_sig4;
+int MCU_FAULT_two_sig5;
+int MCU_FAULT_two_sig6;
+int MCU_FAULT_two_sig7;
+int MCU_FAULT_two_sig8;
+int MCU_FAULT_two_sig9;
+int MCU_FAULT_two_sig10;
+int MCU_FAULT_two_sig11;
+int MCU_FAULT_two_sig12;
+int MCU_FAULT_two_sig13;
+int MCU_FAULT_two_sig14;
 } MCU_FAULT_two_t;
 
 
 // Message: MCU_FAULT_One
 typedef struct {
-double MCU_FAULT_One_sig0;
-double MCU_FAULT_One_sig1;
-double MCU_FAULT_One_sig2;
-double MCU_FAULT_One_sig3;
-double MCU_FAULT_One_sig4;
-double MCU_FAULT_One_sig5;
-double MCU_FAULT_One_sig6;
-double MCU_FAULT_One_sig7;
-double MCU_FAULT_One_sig8;
-double MCU_FAULT_One_sig9;
-double MCU_FAULT_One_sig10;
-double MCU_FAULT_One_sig11;
-double MCU_FAULT_One_sig12;
-double MCU_FAULT_One_sig13;
-double MCU_FAULT_One_sig14;
-double MCU_FAULT_One_sig15;
+	int MCU_FAULT_One_sig0;
+	int MCU_FAULT_One_sig1;
+	int MCU_FAULT_One_sig2;
+	int MCU_FAULT_One_sig3;
+	int MCU_FAULT_One_sig4;
+	int MCU_FAULT_One_sig5;
+	int MCU_FAULT_One_sig6;
+	int MCU_FAULT_One_sig7;
+	int MCU_FAULT_One_sig8;
+	int MCU_FAULT_One_sig9;
+	int MCU_FAULT_One_sig10;
+	int MCU_FAULT_One_sig11;
+	int MCU_FAULT_One_sig12;
+	int MCU_FAULT_One_sig13;
+	int MCU_FAULT_One_sig14;
+	int MCU_FAULT_One_sig15;
 } MCU_FAULT_One_t;
 
 

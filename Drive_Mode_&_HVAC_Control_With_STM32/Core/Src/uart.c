@@ -38,17 +38,41 @@ STATUS uart_init(uint32_t Baud_Rate){
 	    }
 	    return RY_OK;
 }
-/**
- * @brief  Send a single byte over UART1
- * @param  data: byte to send
- * @return UART_Status_t
- */
+STATUS uart3_Init(uint32_t baudrate) {
+    // 1. Enable clocks for GPIOB and USART3
+    RCC->APB2ENR |= RCC_APB2ENR_IOPBEN;   // Enable GPIOB clock
+    RCC->APB1ENR |= RCC_APB1ENR_USART3EN; // Enable USART3 clock
+
+    // 2. Configure PB10 as Alternate Function Push-Pull (TX), 50 MHz
+    GPIOB->CRH &= ~(GPIO_CRH_MODE10 | GPIO_CRH_CNF10);
+    GPIOB->CRH |= (0x03 << GPIO_CRH_MODE10_Pos); // Output mode, max speed 50 MHz
+    GPIOB->CRH |= (0x02 << GPIO_CRH_CNF10_Pos);  // AF push-pull
+
+    // 3. Configure PB11 as Input Floating (RX)
+    GPIOB->CRH &= ~(GPIO_CRH_MODE11 | GPIO_CRH_CNF11);
+    GPIOB->CRH |= (0x01 << GPIO_CRH_CNF11_Pos);  // Floating input
+
+    // 4. USART configuration
+    USART3->CR1 = 0;  // Reset control register
+
+    // Baud rate = Fclk / (16 * USARTDIV)
+    // Example: PCLK1 = 36 MHz, baud = 115200
+    // USARTDIV = 36MHz / (16 * 115200) ≈ 19.53
+    // DIV_Mantissa = 19, DIV_Fraction = 0.53*16 ≈ 8
+    uint32_t pclk = 36000000; // APB1 clock is 36 MHz (default with 72 MHz SYSCLK)
+    uint32_t usartdiv = (pclk + (baudrate/2)) / baudrate; // scaled
+    USART3->BRR = usartdiv;
+
+    // Enable USART, TX, RX
+    USART3->CR1 |= USART_CR1_TE | USART_CR1_RE | USART_CR1_UE;
+    return RY_OK;
+}
 void uart_print(uint8_t data)
 {
     // Wait until TXE (Transmit Data Register Empty)
-    while (!(USART1->SR & USART_SR_TXE)) {  }
-    USART1->DR = data;
-    while (!(USART1->SR & USART_SR_TC)) {  }
+    while (!(USART3->SR & USART_SR_TXE)) {  }
+    USART3->DR = data;
+    while (!(USART3->SR & USART_SR_TC)) {  }
 }
 void uart_print_str(const char *str)
 {
@@ -99,7 +123,7 @@ void uart_send_double(double value, uint8_t decimal_places)
     	uart_print(buf[k]);
     }
 }
-void uart_send(const char *buf, size_t len) {
+void uart_send1(const uint8_t *buf, size_t len) {
     for (size_t i = 0; i < len; ++i) {
         // Wait until TXE (transmit data register empty)
         while (!(USART1->SR & (1U << 7))) { /* busy wait */ } // TXE bit
@@ -108,6 +132,16 @@ void uart_send(const char *buf, size_t len) {
     }
     // Optionally wait for TC (transmission complete) if you need to ensure fully shifted out:
     while (!(USART1->SR & (1U << 6))) { /* wait TC */ } // TC bit
+}
+void uart_send(const uint8_t *buf, size_t len) {
+    for (size_t i = 0; i < len; ++i) {
+        // Wait until TXE (transmit data register empty)
+        while (!(USART3->SR & (1U << 7))) { /* busy wait */ } // TXE bit
+        // Write data (DR is 8-bit)
+        USART3->DR = (uint8_t)buf[i];
+    }
+    // Optionally wait for TC (transmission complete) if you need to ensure fully shifted out:
+    while (!(USART3->SR & (1U << 6))) { /* wait TC */ } // TC bit
 }
 void uart_printf(const char *format, ...)
 {
