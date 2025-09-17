@@ -88,7 +88,7 @@ STATUS can_init(uint32_t Baud_Rate){
 	CAN1->FMR &= ~CAN_FMR_FINIT;
 	return RY_OK;
 }
-void send_can(can_frame_t frame){
+void send_can_data_frame(can_frame_t frame){
 	uint32_t tme_mask = CAN1->TSR & (CAN_TSR_TME0 | CAN_TSR_TME1 | CAN_TSR_TME2);
 	int mail_box = -1;
     if (tme_mask & CAN_TSR_TME0) {
@@ -119,6 +119,30 @@ void send_can(can_frame_t frame){
 	 }
 	CAN1->sTxMailBox[mail_box].TIR |= (1<<0);
 	}
+void send_can_remote_frame(can_frame_t frame){
+	uint32_t tme_mask = CAN1->TSR & (CAN_TSR_TME0 | CAN_TSR_TME1 | CAN_TSR_TME2);
+		int mail_box = 0;
+	    if (tme_mask & CAN_TSR_TME0) {
+	        mail_box = 0;
+	    } else if (tme_mask & CAN_TSR_TME1) {
+	        mail_box = 1;
+	    } else if (tme_mask & CAN_TSR_TME2) {
+	        mail_box = 2;
+	    }
+		CAN1->sTxMailBox[mail_box].TIR = 0x00000000;
+		if(frame.ide==0){
+			CAN1->sTxMailBox[mail_box].TIR |= (frame.id<<21);
+
+		}else{
+			CAN1->sTxMailBox[mail_box].TIR |= (frame.id<<3)|(1<<2);
+
+		}
+	    CAN1->sTxMailBox[mail_box].TDTR = (frame.dlc & 0x0F);
+		CAN1->sTxMailBox[mail_box].TIR |= 1<<1;
+		CAN1->sTxMailBox[mail_box].TDTR &= ~(0xF<<0);
+		CAN1->sTxMailBox[mail_box].TDTR |= (frame.dlc<<0);
+		CAN1->sTxMailBox[mail_box].TIR |= (1<<0);
+}
 void configure_can_filters(const uint32_t *std_ids, uint8_t std_cnt,const uint32_t *ext_ids, uint8_t ext_cnt) {
 
     uint8_t bank = 0;

@@ -12,6 +12,8 @@
 #include"process.h"
 #include"MCU_ELECTROCATALYST_MESSAGES.h"
 #include"Drive_Selector_Switch.h"
+#include"JBD_BMS.h"
+#include"JBD_BMS_MESSAGES.h"
 extern void matel_mcu_process_can_frame(can_frame_t *);
 I2C_HandleTypeDef hi2c1;
 void clock_print_status(){
@@ -25,7 +27,6 @@ void clock_print_status(){
 }
 \
 void can_ids_filter_configure(){
-    /* Standard IDs array - terminated with 0x0000 */
     uint32_t standard_rx_ids[] = {
     		Matel_MCU_POWER_CAN_STD_ID_A1,
 			Matel_MCU_FAULT_one_CAN_STD_ID_AE,
@@ -33,7 +34,6 @@ void can_ids_filter_configure(){
 			Matel_MCU_Fault_Code_CAN_STD_ID_B3,
     };
 
-    /* Extended IDs array - terminated with 0x00000000 */
     uint32_t extended_rx_ids[] = {
     		Matel_MCU_Stat_One_CAN_EXTD_ID_18265040,
 			Matel_MCU_Stat_Two_CAN_EXTD_ID_18275040,
@@ -83,7 +83,7 @@ int main(){
 	  uart_printf("======================================================\r\n");
 	  Error_Handler();
 	}
-	can_ids_filter_configure();
+//	can_ids_filter_configure();
     uart_printf("CAN initialization is ok ,baud_baudrate in %d kbps:\r\n", 500);
     uart_printf("=========================================================\r\n");
     Init_tasks();
@@ -102,34 +102,61 @@ int main(){
 //    MX_I2C1_Init();
 //    Register_task(50,Drive_mode_state);
 //    Register_task(20,process_can_messages);
-    switch_state_t last_state,cur_state;
-     last_state=Switch_update();
+    //    Register_task(30,process_can_messages);
+//    switch_state_t last_state,cur_state;
+//     last_state=Switch_update();
+    uint16_t id[]={0x100,0x101};//,0x102,0x103,0x104,0x105,0x106,0x107,0x108,0x109,0x10a,0x10b,0x10c,0x10d,0x10e,0x10f,0x110};
+    uint8_t index=0,id_size=sizeof(id)/sizeof(id[0]);
     while(1){
+    	    	   can_frame_t rx_frame;
+    	    	   rx_frame.id=id[index];
+    	    	   rx_frame.ide=0;
+    	    	   rx_frame.dlc=8;
+    	    	   rx_frame.data[0]=0;
+    	    	   send_can_remote_frame(rx_frame);
+    	    	   if (CAN_MessagePending(0))
+    	    	   {
+    	    		   can_rx(&rx_frame,0);
+    	    		   Process_Jbd_Bms_Messages(&rx_frame);
+    	    		   uart_printf("\n");
+//    	    		   send_id_data_only_over_uart(&rx_frame);
+    	    	   }
+    	    	   if (CAN_MessagePending(1))
+    	    	   {
+    	    		   uart_printf("\n");
+    	    		   can_rx(&rx_frame,1);
+    	    		   Process_Jbd_Bms_Messages(&rx_frame);
+//    	    		   send_id_data_only_over_uart(&rx_frame);
+					 }
+					index++;
+					if(index>=2){
+					index=0;
+					}
 //    	Run_all_tasks();
-    	   can_frame_t rx_frame;
-    	   if (CAN_MessagePending(0))
-    	   {
-    		   can_rx(&rx_frame,0);
-    		   send_id_data_only_over_uart(&rx_frame);
-    	       matel_mcu_process_can_frame(&rx_frame);
-    	   }
-    	   if (CAN_MessagePending(1))
-    	   {
-    		   can_rx(&rx_frame,1);
-    		   send_id_data_only_over_uart(&rx_frame);
-    	       matel_mcu_process_can_frame(&rx_frame);
-    	   }
-    	cur_state=Switch_update();
-    	if(cur_state!=last_state){
-    		last_state=cur_state;
-    	    GPIOB->ODR |= ((1<<PB0_REVERSE) | (1<<PB1_NEUTRAL) | (1<<PB3_DRIVE));
-    	    switch (cur_state) {
-    	        case 2: GPIOB->ODR &=~ (1<<PB0_REVERSE); break;
-    	        case 0: GPIOB->ODR &=~ (1<<PB1_NEUTRAL); break;
-    	        case 1: GPIOB->ODR &=~ (1<<PB3_DRIVE);   break;
-    	    }
-    		uart_printf(" button=%d :\n",cur_state);
-    	}
+//    	   can_frame_t rx_frame;
+//    	   if (CAN_MessagePending(0))
+//    	   {
+//    		   can_rx(&rx_frame,0);
+//    		   send_id_data_only_over_uart(&rx_frame);
+//    	       matel_mcu_process_can_frame(&rx_frame);
+//    	   }
+//    	   if (CAN_MessagePending(1))
+//    	   {
+//    		   can_rx(&rx_frame,1);
+//    		   send_id_data_only_over_uart(&rx_frame);
+//    	       matel_mcu_process_can_frame(&rx_frame);
+//    	   }
+//    	cur_state=Switch_update();
+//    	if(cur_state!=last_state){
+//    		last_state=cur_state;
+//    	    GPIOB->ODR |= ((1<<PB0_REVERSE) | (1<<PB1_NEUTRAL) | (1<<PB3_DRIVE));
+//    	    switch (cur_state) {
+//    	        case 2: GPIOB->ODR &=~ (1<<PB0_REVERSE); break;
+//    	        case 0: GPIOB->ODR &=~ (1<<PB1_NEUTRAL); break;
+//    	        case 1: GPIOB->ODR &=~ (1<<PB3_DRIVE);   break;
+//    	    }
+//    		uart_printf(" button=%d :\n",cur_state);
+//    	}
     }
 }
 

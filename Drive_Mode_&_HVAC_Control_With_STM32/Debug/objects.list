@@ -2,6 +2,8 @@
 "./Core/Src/Debug.o"
 "./Core/Src/Drive_Select_Switch.o"
 "./Core/Src/I2C.o"
+"./Core/Src/JBD_BMS.o"
+"./Core/Src/JBD_BMS_MESSAGES.o"
 "./Core/Src/MCU_ELECTROCATALYST.o"
 "./Core/Src/MCU_ELECTROCATALYST_MESSAGES.o"
 "./Core/Src/Motor_control_Pins.o"
