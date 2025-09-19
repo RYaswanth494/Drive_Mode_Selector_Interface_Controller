@@ -23,7 +23,7 @@ Core/Src/JBD_BMS_MESSAGES.o: ../Core/Src/JBD_BMS_MESSAGES.c \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_i2c.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h \
- ../Core/Inc/uart.h
+ ../Core/Inc/uart.h ../Core/Inc/can.h
 ../Core/Inc/JBD_BMS_MESSAGES.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
@@ -50,3 +50,4 @@ Core/Src/JBD_BMS_MESSAGES.o: ../Core/Src/JBD_BMS_MESSAGES.c \
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_i2c.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h:
 ../Core/Inc/uart.h:
+../Core/Inc/can.h:

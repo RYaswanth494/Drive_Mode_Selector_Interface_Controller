@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include"extern_file_declarations.h"
+#include"can.h"
 #define UART_PRINTF_BUFFER_SIZE 100
 extern uint32_t get_APB1_freq(void) ;
 STATUS uart_init(uint32_t Baud_Rate){
@@ -125,12 +126,9 @@ void uart_send_double(double value, uint8_t decimal_places)
 }
 void uart_send1(const uint8_t *buf, size_t len) {
     for (size_t i = 0; i < len; ++i) {
-        // Wait until TXE (transmit data register empty)
         while (!(USART1->SR & (1U << 7))) { /* busy wait */ } // TXE bit
-        // Write data (DR is 8-bit)
         USART1->DR = (uint8_t)buf[i];
     }
-    // Optionally wait for TC (transmission complete) if you need to ensure fully shifted out:
     while (!(USART1->SR & (1U << 6))) { /* wait TC */ } // TC bit
 }
 void uart_send(const uint8_t *buf, size_t len) {
@@ -143,6 +141,18 @@ void uart_send(const uint8_t *buf, size_t len) {
     // Optionally wait for TC (transmission complete) if you need to ensure fully shifted out:
     while (!(USART3->SR & (1U << 6))) { /* wait TC */ } // TC bit
 }
+void send_id_data_only_over_uart(const can_frame_t *f) {
+    uint8_t buf[13];
+    /* send id always as 4 bytes (LE) so ESP32 can read little-endian uint32_t */
+    buf[3] = (uint8_t)(f->id & 0xFF);
+    buf[2] = (uint8_t)((f->id >> 8) & 0xFF);
+    buf[1] = (uint8_t)((f->id >> 16) & 0xFF);
+    buf[0] = (uint8_t)((f->id >> 24) & 0xFF);
+    buf[4] = f->dlc;
+    /* copy 8 data bytes (if dlc<8 you still send 8 bytes - zeros ok) */
+    for (int i = 0; i < 8; ++i) buf[5 + i] = f->data[i];
+    uart_send1(buf, sizeof(buf)); // 13 bytes
+}
 void uart_printf(const char *format, ...)
 {
     char buf[256];
@@ -151,7 +161,6 @@ void uart_printf(const char *format, ...)
     int n = vsnprintf(buf, sizeof(buf), format, ap);
     va_end(ap);
     if (n > 0) {
-        // truncate if too long
         if ((size_t)n > sizeof(buf)) n = sizeof(buf);
         uart_send(buf, (size_t)n);
     }

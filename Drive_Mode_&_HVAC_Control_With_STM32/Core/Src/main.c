@@ -25,9 +25,16 @@ void clock_print_status(){
     uart_printf("APB2 Clock: %lu MHz\r\n", get_APB2_freq() / 1000000);
     uart_printf("=====================================\r\n");
 }
-\
 void can_ids_filter_configure(){
     uint32_t standard_rx_ids[] = {
+    		JBD_BMS_ID0,
+			JBD_BMS_ID1,
+			JBD_BMS_ID7,
+			JBD_BMS_ID8,
+			JBD_BMS_ID9,
+			JBD_BMS_ID10,
+			JBD_BMS_ID11,
+			JBD_BMS_ID12,
     		Matel_MCU_POWER_CAN_STD_ID_A1,
 			Matel_MCU_FAULT_one_CAN_STD_ID_AE,
 			Matel_MCU_FAULT_two_CAN_STD_ID_AF,
@@ -37,7 +44,6 @@ void can_ids_filter_configure(){
     uint32_t extended_rx_ids[] = {
     		Matel_MCU_Stat_One_CAN_EXTD_ID_18265040,
 			Matel_MCU_Stat_Two_CAN_EXTD_ID_18275040,
-			Matel_MCU_HearthBeat_CAN_EXTD_ID_18963257,
 			Matel_VECTOR__INDEPENDENT_SIG_MSG_0xC0000000
     };
     configure_can_filters(standard_rx_ids,sizeof(standard_rx_ids)/sizeof(standard_rx_ids[0]),extended_rx_ids,sizeof(extended_rx_ids)/sizeof(extended_rx_ids[0]));
@@ -45,18 +51,6 @@ void can_ids_filter_configure(){
 }
 void send_full_frame_over_uart( can_frame_t *f) {
     uart_send((uint8_t*)f, sizeof(can_frame_t));
-}
-void send_id_data_only_over_uart(const can_frame_t *f) {
-    uint8_t buf[13];
-    /* send id always as 4 bytes (LE) so ESP32 can read little-endian uint32_t */
-    buf[3] = (uint8_t)(f->id & 0xFF);
-    buf[2] = (uint8_t)((f->id >> 8) & 0xFF);
-    buf[1] = (uint8_t)((f->id >> 16) & 0xFF);
-    buf[0] = (uint8_t)((f->id >> 24) & 0xFF);
-    buf[4] = f->dlc;
-    /* copy 8 data bytes (if dlc<8 you still send 8 bytes - zeros ok) */
-    for (int i = 0; i < 8; ++i) buf[5 + i] = f->data[i];
-    uart_send1(buf, sizeof(buf)); // 13 bytes
 }
 #define PB0_REVERSE 0
 #define PB1_NEUTRAL 1
@@ -83,7 +77,7 @@ int main(){
 	  uart_printf("======================================================\r\n");
 	  Error_Handler();
 	}
-//	can_ids_filter_configure();
+	can_ids_filter_configure();
     uart_printf("CAN initialization is ok ,baud_baudrate in %d kbps:\r\n", 500);
     uart_printf("=========================================================\r\n");
     Init_tasks();
@@ -101,62 +95,15 @@ int main(){
     Switch_Pins_int();
 //    MX_I2C1_Init();
 //    Register_task(50,Drive_mode_state);
-//    Register_task(20,process_can_messages);
-    //    Register_task(30,process_can_messages);
-//    switch_state_t last_state,cur_state;
-//     last_state=Switch_update();
-    uint16_t id[]={0x100,0x101};//,0x102,0x103,0x104,0x105,0x106,0x107,0x108,0x109,0x10a,0x10b,0x10c,0x10d,0x10e,0x10f,0x110};
-    uint8_t index=0,id_size=sizeof(id)/sizeof(id[0]);
+    Register_task(50,process_switch_status);
+    Register_task(2,Request_Msgs_to_BMS);
+    Register_task(20,process_can_messages);
+
+
     while(1){
-    	    	   can_frame_t rx_frame;
-    	    	   rx_frame.id=id[index];
-    	    	   rx_frame.ide=0;
-    	    	   rx_frame.dlc=8;
-    	    	   rx_frame.data[0]=0;
-    	    	   send_can_remote_frame(rx_frame);
-    	    	   if (CAN_MessagePending(0))
-    	    	   {
-    	    		   can_rx(&rx_frame,0);
-    	    		   Process_Jbd_Bms_Messages(&rx_frame);
-    	    		   uart_printf("\n");
-//    	    		   send_id_data_only_over_uart(&rx_frame);
-    	    	   }
-    	    	   if (CAN_MessagePending(1))
-    	    	   {
-    	    		   uart_printf("\n");
-    	    		   can_rx(&rx_frame,1);
-    	    		   Process_Jbd_Bms_Messages(&rx_frame);
-//    	    		   send_id_data_only_over_uart(&rx_frame);
-					 }
-					index++;
-					if(index>=2){
-					index=0;
-					}
-//    	Run_all_tasks();
-//    	   can_frame_t rx_frame;
-//    	   if (CAN_MessagePending(0))
-//    	   {
-//    		   can_rx(&rx_frame,0);
-//    		   send_id_data_only_over_uart(&rx_frame);
-//    	       matel_mcu_process_can_frame(&rx_frame);
-//    	   }
-//    	   if (CAN_MessagePending(1))
-//    	   {
-//    		   can_rx(&rx_frame,1);
-//    		   send_id_data_only_over_uart(&rx_frame);
-//    	       matel_mcu_process_can_frame(&rx_frame);
-//    	   }
-//    	cur_state=Switch_update();
-//    	if(cur_state!=last_state){
-//    		last_state=cur_state;
-//    	    GPIOB->ODR |= ((1<<PB0_REVERSE) | (1<<PB1_NEUTRAL) | (1<<PB3_DRIVE));
-//    	    switch (cur_state) {
-//    	        case 2: GPIOB->ODR &=~ (1<<PB0_REVERSE); break;
-//    	        case 0: GPIOB->ODR &=~ (1<<PB1_NEUTRAL); break;
-//    	        case 1: GPIOB->ODR &=~ (1<<PB3_DRIVE);   break;
-//    	    }
-//    		uart_printf(" button=%d :\n",cur_state);
-//    	}
+
+    Run_all_tasks();
+
     }
 }
 

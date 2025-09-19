@@ -23,9 +23,11 @@ Core/Src/process.o: ../Core/Src/process.c \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_i2c.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h \
- ../Core/Inc/can.h ../Core/Inc/MCU_ELECTROCATLYST.h \
- ../Core/Inc/MCU_ELECTROCATALYST_MESSAGES.h ../Core/Inc/can.h \
- ../Core/Inc/process.h
+ ../Core/Inc/can.h ../Core/Inc/uart.h ../Core/Inc/can.h \
+ ../Core/Inc/MCU_ELECTROCATLYST.h \
+ ../Core/Inc/MCU_ELECTROCATALYST_MESSAGES.h ../Core/Inc/process.h \
+ ../Core/Inc/JBD_BMS.h ../Core/Inc/JBD_BMS_MESSAGES.h \
+ ../Core/Inc/Drive_Selector_Switch.h
 ../Core/Inc/extern_file_declarations.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
@@ -52,7 +54,11 @@ Core/Src/process.o: ../Core/Src/process.c \
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_i2c.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h:
 ../Core/Inc/can.h:
+../Core/Inc/uart.h:
+../Core/Inc/can.h:
 ../Core/Inc/MCU_ELECTROCATLYST.h:
 ../Core/Inc/MCU_ELECTROCATALYST_MESSAGES.h:
-../Core/Inc/can.h:
 ../Core/Inc/process.h:
+../Core/Inc/JBD_BMS.h:
+../Core/Inc/JBD_BMS_MESSAGES.h:
+../Core/Inc/Drive_Selector_Switch.h:

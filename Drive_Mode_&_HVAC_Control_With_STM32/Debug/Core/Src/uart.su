@@ -1,8 +1,9 @@
-../Core/Src/uart.c:15:8:uart_init	24	static
-../Core/Src/uart.c:41:8:uart3_Init	24	static
-../Core/Src/uart.c:70:6:uart_print	16	static
-../Core/Src/uart.c:77:6:uart_print_str	16	static
-../Core/Src/uart.c:83:6:uart_send_double	128	static
-../Core/Src/uart.c:126:6:uart_send1	24	static
-../Core/Src/uart.c:136:6:uart_send	24	static
-../Core/Src/uart.c:146:6:uart_printf	272	static
+../Core/Src/uart.c:16:8:uart_init	24	static
+../Core/Src/uart.c:42:8:uart3_Init	24	static
+../Core/Src/uart.c:71:6:uart_print	16	static
+../Core/Src/uart.c:78:6:uart_print_str	16	static
+../Core/Src/uart.c:84:6:uart_send_double	128	static
+../Core/Src/uart.c:127:6:uart_send1	24	static
+../Core/Src/uart.c:134:6:uart_send	24	static
+../Core/Src/uart.c:144:6:send_id_data_only_over_uart	40	static
+../Core/Src/uart.c:156:6:uart_printf	272	static

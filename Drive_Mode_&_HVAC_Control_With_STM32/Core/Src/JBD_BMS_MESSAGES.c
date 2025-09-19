@@ -13,14 +13,14 @@ void decode_CAN_0x100(const uint8_t *data, CAN_BMS_0x100_t *msg) {
     msg->Charge_and_Discharge_Current =(float)((int16_t)((data[2] << 8) | data[3])) * 0.01f;  // 10 mA → A
     msg->Remaining_Capacity= (float)(((int16_t)(data[4] << 8) | data[5])) * 0.01f; // 10 mAh → Ah
     msg->CRC_Check   = (data[6] << 8) | data[7];
-    uart_printf("Total_Voltage=%d Charge_and_Discharge_Current=%d Remaining_Capacity=%d\n\r",(int)msg->Total_Voltage,(int)msg->Charge_and_Discharge_Current,(int)msg->Remaining_Capacity);
+    uart_printf("Total_Voltage=%.2f Vol Charge_and_Discharge_Current=%.2f A Remaining_Capacity=%.2f Ah\n\r",msg->Total_Voltage,msg->Charge_and_Discharge_Current,msg->Remaining_Capacity);
 }
 void decode_CAN_0x101(const uint8_t *data, CAN_BMS_0x101_t *msg) {
     msg->Full_Capacity = ((data[0] << 8) | data[1]) * 0.01f;  // 10 mAh → Ah
     msg->No_Cycles        = (data[2] << 8) | data[3];
     msg->RSOC          = (uint8_t)(((data[4] << 8) | data[5]) & 0xFF); // RSOC in %
     msg->CRC_Check        = (data[6] << 8) | data[7];
-    uart_printf("Full_Capacity=%d ",(int)msg->Full_Capacity);
+    uart_printf("Full_Capacity=%.2f Ah RSOC=%d %\n\r",msg->Full_Capacity,(int)msg->RSOC);
 
 }
 void decode_CAN_Voltage(const uint8_t *data, uint16_t msg_id, CAN_BMS_Cell_Voltages_t *msg) {
@@ -98,115 +98,119 @@ void decode_CAN_0x106(const uint8_t *data, CAN_BMS_0x106_t *msg) {
     // Decode temperature value of NTC5 (Bytes 2-3)
     uint16_t raw_ntc5_temp = (data[2] << 8) | data[3];
     msg->NTC5 = (raw_ntc5_temp * 0.1f) - 273.15f;
-
     // Decode temperature value of NTC6 (Bytes 4-5)
     uint16_t raw_ntc6_temp = (data[4] << 8) | data[5];
     msg->NTC6 = (raw_ntc6_temp * 0.1f) - 273.15f;
-
     // Decode CRC_16 check value (Bytes 6-7)
     msg->CRC_Check = (data[6] << 8) | data[7];
 }
 void decode_CAN_0x107(const uint8_t *data, CAN_BMS_0x107_t *msg) {
     // Decode Cell1 voltage (Bytes 0-1)
     // The value is unsigned and in mV. "High byte first" means big-endian.
-    msg->CELL1 = (data[0] << 8) | data[1];
+    msg->CELL1 = (float)((data[0] << 8) | data[1])/1000.f;
     // Decode Cell2 voltage (Bytes 2-3)
-    msg->CELL2 = (data[2] << 8) | data[3];
+    msg->CELL2 = (float)((data[2] << 8) | data[3])/1000.0f;
     // Decode Cell3 voltage (Bytes 4-5)
-    msg->CELL3 = (data[4] << 8) | data[5];
+    msg->CELL3 = (float)((data[4] << 8) | data[5])/1000.0f;
     // Decode CRC_16 check value (Bytes 6-7)
     msg->CRC_Check = (data[6] << 8) | data[7];
+    uart_printf("CELL1=%.2f v CELL2=%.2f v CELL3=%.2f v \n\r",msg->CELL1,msg->CELL2,msg->CELL3);
 }
 
 void decode_CAN_0x108(const uint8_t *data, CAN_BMS_0x108_t *msg) {
     // Decode Cell4 voltage (Bytes 0-1)
     // The value is unsigned and in mV. "High byte first" means big-endian.
-    msg->CELL4 = (data[0] << 8) | data[1];
+    msg->CELL4 =  (float)((data[0] << 8) | data[1])/1000.f;
 
     // Decode Cell5 voltage (Bytes 2-3)
-    msg->CELL5 = (data[2] << 8) | data[3];
-
+    msg->CELL5 =(float)((data[2] << 8) | data[3])/1000.0f;
     // Decode Cell6 voltage (Bytes 4-5)
-    msg->CELL6 = (data[4] << 8) | data[5];
+    msg->CELL6 = (float)((data[4] << 8) | data[5])/1000.0f;
 
     // Decode CRC_16 check value (Bytes 6-7)
     msg->CRC_Check = (data[6] << 8) | data[7];
+    uart_printf("CELL4=%.2f v CELL5=%.2f v CELL6=%.2f v \n\r",msg->CELL4,msg->CELL5,msg->CELL6);
 }
 void decode_CAN_0x109(const uint8_t *data, CAN_BMS_0x109_t *msg) {
     // Decode Cell6 voltage (Bytes 0-1)
     // The value is unsigned and in mV. "High byte first" means big-endian.
-    msg->CELL6 = (data[0] << 8) | data[1];
-
+    msg->CELL7 = (float)((data[0] << 8) | data[1])/1000.f;
     // Decode Cell7 voltage (Bytes 2-3)
-    msg->CELL7 = (data[2] << 8) | data[3];
+    msg->CELL8 = (float)((data[2] << 8) | data[3])/1000.0f;
 
     // Decode Cell8 voltage (Bytes 4-5)
-    msg->CELL8 = (data[4] << 8) | data[5];
+    msg->CELL9 = (float)((data[4] << 8) | data[5])/1000.0f;
 
     // Decode CRC_16 check value (Bytes 6-7)
     msg->CRC_Check = (data[6] << 8) | data[7];
+    uart_printf("CELL7=%.2f v CELL8=%.2f v CELL9=%.2f v \n\r",msg->CELL7,msg->CELL8,msg->CELL9);
 }
 void decode_CAN_0x10A(const uint8_t *data, CAN_BMS_0x10A_t *msg) {
     // Decode Cell10 voltage (Bytes 0-1)
     // The value is unsigned and in mV. "High byte first" means big-endian.
-    msg->CELL10 = (data[0] << 8) | data[1];
+    msg->CELL10 =  (float)((data[0] << 8) | data[1])/1000.f;
 
     // Decode Cell11 voltage (Bytes 2-3)
-    msg->CELL11 = (data[2] << 8) | data[3];
+    msg->CELL11 = (float)((data[2] << 8) | data[3])/1000.0f;
 
     // Decode Cell12 voltage (Bytes 4-5)
-    msg->CELL12 = (data[4] << 8) | data[5];
+    msg->CELL12 = (float)((data[4] << 8) | data[5])/1000.0f;
 
     // Decode CRC_16 check value (Bytes 6-7)
     msg->CRC_Check = (data[6] << 8) | data[7];
+    uart_printf("CELL10=%.2f v CELL11=%.2f v CELL12=%.2f v \n\r",msg->CELL10,msg->CELL11,msg->CELL12);
 }
 void decode_CAN_0x10B(const uint8_t *data, CAN_BMS_0x10B_t *msg) {
     // Decode Cell13 voltage (Bytes 0-1)
     // The value is unsigned and in mV. "High byte first" means big-endian.
-    msg->CELL13 = (data[0] << 8) | data[1];
+    msg->CELL13 =  (float)((data[0] << 8) | data[1])/1000.f;
     // Decode Cell14 voltage (Bytes 2-3)
-    msg->CELL14 = (data[2] << 8) | data[3];
+    msg->CELL14 = (float)((data[2] << 8) | data[3])/1000.0f;
     // Decode Cell15 voltage (Bytes 4-5)
-    msg->CELL15 = (data[4] << 8) | data[5];
+    msg->CELL15 = (float)((data[4] << 8) | data[5])/1000.0f;
     // Decode CRC_16 check value (Bytes 6-7)
     msg->CRC_Check = (data[6] << 8) | data[7];
+    uart_printf("CELL13=%.2f v CELL14=%.2f v CELL15=%.2f v \n\r",msg->CELL13,msg->CELL14,msg->CELL15);
 }
 void decode_CAN_0x10C(const uint8_t *data, CAN_BMS_0x10C_t *msg) {
     // Decode Cell16 voltage (Bytes 0-1)
     // The value is unsigned and in mV. "High byte first" means big-endian.
-    msg->CELL16 = (data[0] << 8) | data[1];
+    msg->CELL16 =  (float)((data[0] << 8) | data[1])/1000.f;
 
     // Decode Cell17 voltage (Bytes 2-3)
-    msg->CELL17 = (data[2] << 8) | data[3];
+    msg->CELL17 = (float)((data[2] << 8) | data[3])/1000.0f;
 
     // Decode Cell3 voltage (Bytes 4-5)
-    msg->CELL18 = (data[4] << 8) | data[5];
+    msg->CELL18 = (float)((data[4] << 8) | data[5])/1000.0f;
 
     // Decode CRC_16 check value (Bytes 6-7)
     msg->CRC_Check = (data[6] << 8) | data[7];
-}void decode_CAN_0x10D(const uint8_t *data, CAN_BMS_0x10D_t *msg) {
+    uart_printf("CELL16=%.2f v \n\r",msg->CELL16);
+}
+void decode_CAN_0x10D(const uint8_t *data, CAN_BMS_0x10D_t *msg) {
     // Decode Cell19 voltage (Bytes 0-1)
     // The value is unsigned and in mV. "High byte first" means big-endian.
-    msg->CELL19 = (data[0] << 8) | data[1];
+    msg->CELL19 =  (float)((data[0] << 8) | data[1])/1000.f;
 
     // Decode Cell20 voltage (Bytes 2-3)
-    msg->CELL20 = (data[2] << 8) | data[3];
+    msg->CELL20 = (float)((data[2] << 8) | data[3])/1000.0f;
 
     // Decode Cell21 voltage (Bytes 4-5)
-    msg->CELL21 = (data[4] << 8) | data[5];
+    msg->CELL21 = (float)((data[4] << 8) | data[5])/1000.0f;
 
     // Decode CRC_16 check value (Bytes 6-7)
     msg->CRC_Check = (data[6] << 8) | data[7];
-}void decode_CAN_0x10E(const uint8_t *data, CAN_BMS_0x10E_t *msg) {
+}
+void decode_CAN_0x10E(const uint8_t *data, CAN_BMS_0x10E_t *msg) {
     // Decode Cell22 voltage (Bytes 0-1)
     // The value is unsigned and in mV. "High byte first" means big-endian.
-    msg->CELL22 = (data[0] << 8) | data[1];
+    msg->CELL22 =  (float)((data[0] << 8) | data[1])/1000.f;
 
     // Decode Cell23 voltage (Bytes 2-3)
-    msg->CELL23 = (data[2] << 8) | data[3];
+    msg->CELL23 = (float)((data[2] << 8) | data[3])/1000.0f;
 
     // Decode Cell24 voltage (Bytes 4-5)
-    msg->CELL24 = (data[4] << 8) | data[5];
+    msg->CELL24 = (float)((data[4] << 8) | data[5])/1000.0f;
 
     // Decode CRC_16 check value (Bytes 6-7)
     msg->CRC_Check = (data[6] << 8) | data[7];
@@ -214,13 +218,13 @@ void decode_CAN_0x10C(const uint8_t *data, CAN_BMS_0x10C_t *msg) {
 void decode_CAN_0x10F(const uint8_t *data, CAN_BMS_0x10F_t *msg) {
     // Decode Cell25 voltage (Bytes 0-1)
     // The value is unsigned and in mV. "High byte first" means big-endian.
-    msg->CELL25 = (data[0] << 8) | data[1];
+    msg->CELL25 =  (float)((data[0] << 8) | data[1])/1000.f;
 
     // Decode Cell26 voltage (Bytes 2-3)
-    msg->CELL26 = (data[2] << 8) | data[3];
+    msg->CELL26 = (float)((data[2] << 8) | data[3])/1000.0f;
 
     // Decode Cell27 voltage (Bytes 4-5)
-    msg->CELL27 = (data[4] << 8) | data[5];
+    msg->CELL27 = (float)((data[4] << 8) | data[5])/1000.0f;
 
     // Decode CRC_16 check value (Bytes 6-7)
     msg->CRC_Check = (data[6] << 8) | data[7];
@@ -228,13 +232,13 @@ void decode_CAN_0x10F(const uint8_t *data, CAN_BMS_0x10F_t *msg) {
 void decode_CAN_0x110(const uint8_t *data, CAN_BMS_0x110_t *msg) {
     // Decode Cell28 voltage (Bytes 0-1)
     // The value is unsigned and in mV. "High byte first" means big-endian.
-    msg->CELL28 = (data[0] << 8) | data[1];
+    msg->CELL28 =  (float)((data[0] << 8) | data[1])/1000.f;
 
     // Decode Cell29 voltage (Bytes 2-3)
-    msg->CELL29 = (data[2] << 8) | data[3];
+    msg->CELL29 = (float)((data[2] << 8) | data[3])/1000.0f;
 
     // Decode Cell30 voltage (Bytes 4-5)
-    msg->CELL30 = (data[4] << 8) | data[5];
+    msg->CELL30 = (float)((data[4] << 8) | data[5])/1000.0f;
 
     // Decode CRC_16 check value (Bytes 6-7)
     msg->CRC_Check = (data[6] << 8) | data[7];

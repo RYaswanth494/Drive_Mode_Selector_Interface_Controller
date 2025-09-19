@@ -1,3 +1,5 @@
-../Core/Src/process.c:12:9:crc8	24	static
-../Core/Src/process.c:23:6:Drive_mode_state	8	static
-../Core/Src/process.c:37:6:process_can_messages	24	static
+../Core/Src/process.c:18:9:crc8	24	static
+../Core/Src/process.c:29:6:Drive_mode_state	8	static
+../Core/Src/process.c:43:6:process_can_messages	24	static
+../Core/Src/process.c:60:6:process_switch_status	8	static
+../Core/Src/process.c:72:6:Request_Msgs_to_BMS	24	static

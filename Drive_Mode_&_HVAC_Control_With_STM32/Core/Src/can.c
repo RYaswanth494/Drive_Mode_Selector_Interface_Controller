@@ -144,8 +144,69 @@ void send_can_remote_frame(can_frame_t frame){
 		CAN1->sTxMailBox[mail_box].TIR |= (1<<0);
 }
 void configure_can_filters(const uint32_t *std_ids, uint8_t std_cnt,const uint32_t *ext_ids, uint8_t ext_cnt) {
+    uint8_t bank = 0; // filter bank index
 
-    uint8_t bank = 0;
+    // Enter filter initialization mode
+    CAN1->FMR |= CAN_FMR_FINIT;
+
+    // --- Configure standard IDs ---
+    for (uint8_t i = 0; i < std_cnt; i += 2)
+    {
+        if (bank >= 14) break; // no more filter banks available
+
+        // Set 16-bit scale configuration
+        CAN1->FS1R &= ~(1 << bank); // 0 = 16-bit scale
+
+        // Set list mode (not mask mode)
+        CAN1->FM1R |= (1 << bank);
+
+        // Assign to FIFO0
+        CAN1->FFA1R &= ~(1 << bank);
+
+        // Two IDs per bank (if available)
+        uint16_t id1 = std_ids[i] & 0x7FF;
+        uint16_t id2 = (i + 1 < std_cnt) ? (std_ids[i+1] & 0x7FF) : 0;
+
+        // Put IDs into filter registers
+        CAN1->sFilterRegister[bank].FR1 = (id1 << 5) | (id2 << 21);
+        CAN1->sFilterRegister[bank].FR2 = 0; // not used in 16-bit mode
+
+        // Enable filter
+        CAN1->FA1R |= (1 << bank);
+
+        bank++;
+    }
+
+    // --- Configure extended IDs ---
+    for (uint8_t i = 0; i < ext_cnt; i++)
+    {
+        if (bank >= 14) break; // no more filter banks available
+
+        // Set 32-bit scale configuration
+        CAN1->FS1R |= (1 << bank); // 1 = 32-bit scale
+
+        // Set list mode
+        CAN1->FM1R |= (1 << bank);
+
+        // Assign to FIFO1
+        CAN1->FFA1R |= (1 << bank);
+
+        // Extended ID format: ID[28:0] << 3 + IDE bit
+        uint32_t id = ((ext_ids[i] & 0x1FFFFFFF) << 3) | (1 << 2);
+
+        // Put ID into filter
+        CAN1->sFilterRegister[bank].FR1 = id;
+        CAN1->sFilterRegister[bank].FR2 = 0;
+
+        // Enable filter
+        CAN1->FA1R |= (1 << bank);
+
+        bank++;
+    }
+
+    // Exit filter initialization mode
+    CAN1->FMR &= ~CAN_FMR_FINIT;
+   /* uint8_t bank = 0;
 
     // Enter filter init mode
     CAN1->FMR |= CAN_FMR_FINIT;
@@ -223,7 +284,7 @@ void configure_can_filters(const uint32_t *std_ids, uint8_t std_cnt,const uint32
     }
 
     // Leave filter init mode
-    CAN1->FMR &= ~CAN_FMR_FINIT;
+    CAN1->FMR &= ~CAN_FMR_FINIT;*/
 }
 //void send_full_frame_over_uart( can_frame_t *f) {
 //    uart_send((uint8_t*)f, sizeof(can_frame_t));

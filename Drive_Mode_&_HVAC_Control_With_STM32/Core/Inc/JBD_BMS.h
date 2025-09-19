@@ -30,5 +30,4 @@ typedef struct{
 	CAN_BMS_0x110_t Id_0x110;
 }JBD_BMS_MSG_t;
 void Process_Jbd_Bms_Messages(can_frame_t *);
-
 #endif /* JBD_BMS_H_ */

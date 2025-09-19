@@ -23,7 +23,7 @@ Core/Src/can.o: ../Core/Src/can.c ../Core/Inc/main.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_i2c.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h \
  ../Core/Inc/can.h ../Core/Inc/main.h ../Core/Inc/uart.h \
- ../Core/Inc/system_clock_init.h
+ ../Core/Inc/can.h ../Core/Inc/system_clock_init.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
 ../Core/Inc/stm32f1xx_hal_conf.h:
@@ -51,4 +51,5 @@ Core/Src/can.o: ../Core/Src/can.c ../Core/Inc/main.h \
 ../Core/Inc/can.h:
 ../Core/Inc/main.h:
 ../Core/Inc/uart.h:
+../Core/Inc/can.h:
 ../Core/Inc/system_clock_init.h:

@@ -1,6 +1,5 @@
 ../Core/Src/main.c:19:6:clock_print_status	8	static
-../Core/Src/main.c:29:6:can_ids_filter_configure	48	static
-../Core/Src/main.c:46:6:send_full_frame_over_uart	16	static
-../Core/Src/main.c:49:6:send_id_data_only_over_uart	40	static
-../Core/Src/main.c:64:5:main	40	static
-../Core/Src/main.c:164:6:Error_Handler	4	static
+../Core/Src/main.c:28:6:can_ids_filter_configure	80	static
+../Core/Src/main.c:52:6:send_full_frame_over_uart	16	static
+../Core/Src/main.c:58:5:main	16	static
+../Core/Src/main.c:111:6:Error_Handler	4	static

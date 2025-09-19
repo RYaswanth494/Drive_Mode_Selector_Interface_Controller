@@ -21,8 +21,6 @@ void matel_mcu_process_can_frame(can_frame_t *frame){
 		                                  break;
 	case Matel_MCU_Fault_Code_CAN_STD_ID_B3:decode_MCU_Fault_Code(frame->data, &msg.MCU_Fault_Code);
 		                                   break;
-//	case Matel_CANFRAME3_CAN_STD_ID_3AA:decode_CANFRAME3(frame->data, &msg.CANFRAME3);
-//		                                   break;
 	case Matel_MCU_Stat_One_CAN_EXTD_ID_18265040:decode_MCU_Stat_One(frame->data, &msg.MCU_Stat_One);
 		                                  break;
 	case Matel_MCU_Stat_Two_CAN_EXTD_ID_18275040:decode_MCU_Stat_Two(frame->data, &msg.MCU_Stat_Two);

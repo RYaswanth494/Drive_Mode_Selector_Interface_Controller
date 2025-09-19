@@ -9,6 +9,8 @@
 #include"JBD_BMS.h"
 #include"can.h"
 JBD_BMS_MSG_t Bms_Frames;
+
+
 void Process_Jbd_Bms_Messages(can_frame_t *frame){
  switch(frame->id){
  case 0x100:decode_CAN_0x100(frame->data,&Bms_Frames.Id_0x100);
@@ -40,3 +42,4 @@ void Process_Jbd_Bms_Messages(can_frame_t *frame){
  default :break;
  }
 }
+
