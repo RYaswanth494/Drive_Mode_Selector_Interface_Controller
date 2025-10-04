@@ -27,7 +27,7 @@ Core/Src/process.o: ../Core/Src/process.c \
  ../Core/Inc/MCU_ELECTROCATLYST.h \
  ../Core/Inc/MCU_ELECTROCATALYST_MESSAGES.h ../Core/Inc/process.h \
  ../Core/Inc/JBD_BMS.h ../Core/Inc/JBD_BMS_MESSAGES.h \
- ../Core/Inc/Drive_Selector_Switch.h
+ ../Core/Inc/Drive_Selector_Switch.h ../Core/Inc/Data_Watchpoint_Trace.h
 ../Core/Inc/extern_file_declarations.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
@@ -62,3 +62,4 @@ Core/Src/process.o: ../Core/Src/process.c \
 ../Core/Inc/JBD_BMS.h:
 ../Core/Inc/JBD_BMS_MESSAGES.h:
 ../Core/Inc/Drive_Selector_Switch.h:
+../Core/Inc/Data_Watchpoint_Trace.h:

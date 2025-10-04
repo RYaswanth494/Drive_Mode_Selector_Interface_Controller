@@ -8,3 +8,6 @@
 
 #include"Debug.h"
 
+void DEBUG_MESSAGES(){
+
+}

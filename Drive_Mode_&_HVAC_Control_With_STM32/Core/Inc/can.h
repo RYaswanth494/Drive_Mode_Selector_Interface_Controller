@@ -20,7 +20,7 @@ typedef struct {
 } can_frame_t;
 
 #define CAN_FILTER_BANKS 14
-
+void check_can_bus(void);
 STATUS can_init(uint32_t Baud_Rate);
 void send_can_data_frame(can_frame_t can_frame);
 void send_can_remote_frame(can_frame_t can_frame);

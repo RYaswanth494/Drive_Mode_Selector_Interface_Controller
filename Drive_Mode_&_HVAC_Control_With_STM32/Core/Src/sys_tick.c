@@ -6,6 +6,7 @@
  */
 
 #include"extern_file_declarations.h"
+
 void systick_init(uint32_t ticks_per_sec){
     // Reload value = (SystemCoreClock / ticks_per_sec) - 1
     SysTick->LOAD = (get_SYSCLK_freq() / ticks_per_sec) - 1;

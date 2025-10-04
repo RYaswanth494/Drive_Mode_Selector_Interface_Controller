@@ -1,9 +1,8 @@
 ../Core/Src/uart.c:16:8:uart_init	4
-../Core/Src/uart.c:42:8:uart3_Init	1
-../Core/Src/uart.c:71:6:uart_print	3
-../Core/Src/uart.c:78:6:uart_print_str	2
-../Core/Src/uart.c:84:6:uart_send_double	6
-../Core/Src/uart.c:127:6:uart_send1	4
-../Core/Src/uart.c:134:6:uart_send	4
-../Core/Src/uart.c:144:6:send_id_data_only_over_uart	2
-../Core/Src/uart.c:156:6:uart_printf	3
+../Core/Src/uart.c:47:8:uart3_Init	1
+../Core/Src/uart.c:76:6:uart_print	3
+../Core/Src/uart.c:83:6:uart_print_str	2
+../Core/Src/uart.c:89:6:uart_send1	4
+../Core/Src/uart.c:96:6:uart_send	4
+../Core/Src/uart.c:106:6:send_id_data_only_over_uart	3
+../Core/Src/uart.c:119:6:uart_printf	3

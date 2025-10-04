@@ -1,0 +1,8 @@
+../Core/Src/Data_Watchpoint_Trace.c:53:6:DWT_IsSupported	1
+../Core/Src/Data_Watchpoint_Trace.c:59:6:DWT_Init	1
+../Core/Src/Data_Watchpoint_Trace.c:75:6:DWT_Reset	1
+../Core/Src/Data_Watchpoint_Trace.c:82:6:DWT_Start	1
+../Core/Src/Data_Watchpoint_Trace.c:87:6:DWT_Stop	1
+../Core/Src/Data_Watchpoint_Trace.c:92:10:DWT_GetCycles	1
+../Core/Src/Data_Watchpoint_Trace.c:97:7:DWT_GetUs	1
+../Core/Src/Data_Watchpoint_Trace.c:102:7:DWT_GetMs	1

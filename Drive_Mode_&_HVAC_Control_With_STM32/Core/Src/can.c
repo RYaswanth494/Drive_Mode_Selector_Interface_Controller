@@ -10,7 +10,7 @@
 #include"uart.h"
 #include"system_clock_init.h"
 #define CAN_MAX_FILTER_BANKS 14
-
+volatile uint8_t bus_ok = 1;
 typedef struct {
     uint16_t prescaler;
     uint32_t tseg1;
@@ -71,6 +71,9 @@ STATUS can_init(uint32_t Baud_Rate){
 	{
 		RY_NOT_OK;
 	}
+    CAN1->MCR |= CAN_MCR_ABOM;   // <-- This must be here
+	CAN1->MCR |= CAN_MCR_ABOM;   // auto bus-off recovery
+	CAN1->MCR |= CAN_MCR_TXFP;   // FIFO priority
 	CAN1->MCR &= ~(1<<0);  // CLEAR INQR BIT TO LEAVE INTILAIZE MODE=
 	while (CAN1->MSR & CAN_MSR_INAK_Msk);  // Wait for Normal Mode
 	CAN1->FMR |= CAN_FMR_FINIT;       // Enter filter init mode
@@ -87,6 +90,25 @@ STATUS can_init(uint32_t Baud_Rate){
 
 	CAN1->FMR &= ~CAN_FMR_FINIT;
 	return RY_OK;
+}
+void check_can_bus(void) {
+	 uint32_t esr = CAN1->ESR;
+	uint8_t bus_off = (CAN1->ESR & CAN_ESR_BOFF) ? 1 : 0;
+	uint8_t error_passive = (CAN1->ESR & CAN_ESR_EPVF) ? 1 : 0;
+	uint8_t error_warning = (CAN1->ESR & CAN_ESR_EWGF) ? 1 : 0;
+
+	// Determine bus_ok
+	if (bus_off) bus_ok = 0;
+	else if (error_passive) bus_ok = 0;
+	else if (error_warning) bus_ok = 0;
+	else bus_ok = 1;
+	   // Optional: force soft reset if bus-off persists and ABOM not enabled
+	     if ((esr & CAN_ESR_BOFF) && !(CAN1->MCR & CAN_MCR_ABOM)) {
+	         CAN1->MCR |= CAN_MCR_INRQ;
+	         while (!(CAN1->MSR & CAN_MSR_INAK));
+	         CAN1->MCR &= ~CAN_MCR_INRQ;
+	         while (CAN1->MSR & CAN_MSR_INAK);
+	     }
 }
 void send_can_data_frame(can_frame_t frame){
 	uint32_t tme_mask = CAN1->TSR & (CAN_TSR_TME0 | CAN_TSR_TME1 | CAN_TSR_TME2);
@@ -300,9 +322,9 @@ void configure_can_filters(const uint32_t *std_ids, uint8_t std_cnt,const uint32
 uint8_t CAN_MessagePending(uint8_t fifo)
 {
     if (fifo == 0)
-        return (CAN1->RF0R & CAN_RF0R_FMP0_Msk) ? 1 : 0;
+        return (CAN1->RF0R & CAN_RF0R_FMP0_Msk);
     else
-        return (CAN1->RF1R & CAN_RF1R_FMP1_Msk) ? 1 : 0;
+        return (CAN1->RF1R & CAN_RF1R_FMP1_Msk);
 }
 
 uint8_t can_rx(can_frame_t *RxMessage,uint8_t fifo_number){
@@ -328,7 +350,6 @@ uint8_t can_rx(can_frame_t *RxMessage,uint8_t fifo_number){
 
 		  }
 	  }
-//	  send_full_frame_over_uart(&RxMessage);
 	  if (fifo_number == 0)
 	  {
 		  CAN1->RF0R |= CAN_RF0R_RFOM0;
@@ -343,19 +364,16 @@ uint32_t can_recv_bulk(can_frame_t *frames, uint32_t max_frames)
 {
     uint32_t frames_received = 0;
 
-    if ( frames == NULL || max_frames == 0)
-        return 0;
-
     while (frames_received < max_frames)
     {
-        if ((CAN1->RF0R & CAN_RF0R_FMP0) > 0)
+        if ((CAN_MessagePending(0)) > 0)
         {
-            if (receive_can_data(0,&frames[frames_received]))
+            if (can_rx(&frames[frames_received],0))
                 frames_received++;
         }
-        else if ((CAN1->RF1R & CAN_RF1R_FMP1)>0)
+        else if ((CAN_MessagePending(1)) > 0)
         {
-            if (receive_can_data(1,&frames[frames_received]))
+            if (can_rx(&frames[frames_received],1))
                 frames_received++;
         }
         else

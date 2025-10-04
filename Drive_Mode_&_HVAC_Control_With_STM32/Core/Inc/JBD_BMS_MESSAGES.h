@@ -33,6 +33,7 @@ typedef struct{
 	float Charge_and_Discharge_Current;
 	float Remaining_Capacity;
 	uint16_t CRC_Check;
+	uint8_t rx_or_not:1;
 }CAN_BMS_0x100_t;
 
 typedef struct{
@@ -40,12 +41,15 @@ typedef struct{
 	uint16_t  No_Cycles;
 	uint16_t RSOC;
 	uint16_t CRC_Check;
+	uint8_t rx_or_not:1;
 }CAN_BMS_0x101_t;
 
 typedef struct{
 	bool Equlization_Low_byte[33];
 	uint16_t Protection_Status;
 	uint16_t CRC_Check;
+	uint8_t rx_or_not:1;
+
 }CAN_BMS_0x102_t;
 
 typedef struct{
@@ -53,6 +57,7 @@ typedef struct{
 	short int Production_Date;
 	uint16_t Software_Version;
 	uint16_t CRC_Check;
+	uint8_t rx_or_not:1;
 }CAN_BMS_0x103_t;
 
 typedef struct{
@@ -91,7 +96,7 @@ typedef struct{
 	float  CELL5;
 	float CELL6;
 	uint16_t CRC_Check;
-	uint8_t rx_or_not:1;
+	uint8_t rx_or_not;
 }CAN_BMS_0x108_t;
 
 typedef struct{

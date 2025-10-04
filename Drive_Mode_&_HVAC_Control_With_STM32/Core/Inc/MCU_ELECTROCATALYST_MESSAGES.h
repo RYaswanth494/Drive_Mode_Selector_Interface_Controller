@@ -39,6 +39,7 @@ typedef struct {
 double MCU_Odometer_Val; // scaled
 double MCU_VCU_State;
 double MCU_Motor_RPM;
+uint8_t rx_or_not:1;
 } MCU_Stat_Two_t;
 
 
@@ -68,6 +69,7 @@ int MCU_Fault_Code_20;
 int MCU_Fault_Code_21;
 int MCU_Fault_Code_22;
 int MCU_Fault_Code_23;
+uint8_t rx_or_not:1;
 } MCU_Fault_Code_t;
 
 
@@ -85,6 +87,7 @@ double HeartBeat_Stat8;
 double HeartBeat_Stat9;
 double HeartBeat_Stat10;
 double HeartBeat_Stat11;
+uint8_t rx_or_not:1;
 } HearthBeat_t;
 
 
@@ -95,6 +98,7 @@ double CANFRAME3_sig1;
 double CANFRAME3_sig2;
 double CANFRAME3_sig3;
 double CANFRAME3_sig4;
+uint8_t rx_or_not:1;
 } CANFRAME3_t;
 // Message: MCU_Stat_One
 typedef struct {
@@ -105,6 +109,7 @@ int MCU_Stat_One_sig3;
 int MCU_Stat_One_sig4;
 int MCU_Stat_One_sig5;
 int MCU_Stat_One_sig6;
+uint8_t rx_or_not:1;
 } MCU_Stat_One_t;
 // Message: MCU_FAULT_two
 typedef struct {
@@ -123,6 +128,7 @@ int MCU_FAULT_two_sig11;
 int MCU_FAULT_two_sig12;
 int MCU_FAULT_two_sig13;
 int MCU_FAULT_two_sig14;
+uint8_t rx_or_not:1;
 } MCU_FAULT_two_t;
 
 
@@ -144,6 +150,7 @@ typedef struct {
 	int MCU_FAULT_One_sig13;
 	int MCU_FAULT_One_sig14;
 	int MCU_FAULT_One_sig15;
+	uint8_t rx_or_not:1;
 } MCU_FAULT_One_t;
 
 
@@ -154,6 +161,7 @@ double power_sig1;
 double power_sig2;
 int power_sig3;
 double power_sig4;
+uint8_t rx_or_not:1;
 } MCU_POWER_One_t;
 
 // Prototypes for decode functions

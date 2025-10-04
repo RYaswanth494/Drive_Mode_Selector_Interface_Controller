@@ -1,5 +1,7 @@
-../Core/Src/process.c:18:9:crc8	3
-../Core/Src/process.c:29:6:Drive_mode_state	7
-../Core/Src/process.c:43:6:process_can_messages	3
-../Core/Src/process.c:60:6:process_switch_status	6
-../Core/Src/process.c:72:6:Request_Msgs_to_BMS	2
+../Core/Src/process.c:26:9:crc8	3
+../Core/Src/process.c:37:6:Drive_mode_state	7
+../Core/Src/process.c:51:6:process_can_messages	3
+../Core/Src/process.c:125:6:process_switch_status	6
+../Core/Src/process.c:145:6:Request_Msgs_to_BMS	2
+../Core/Src/process.c:157:6:print_mcu_data	7
+../Core/Src/process.c:265:6:print_bms_data	14

@@ -17,6 +17,8 @@ STATUS uart_init(uint32_t Baud_Rate){
 	 // Enable clocks
 	    RCC->APB2ENR |= RCC_APB2ENR_IOPAEN;   // GPIOA
 	    RCC->APB2ENR |= RCC_APB2ENR_USART1EN; // USART1
+	    RCC->AHBENR |= RCC_AHBENR_DMA1EN; // DMA1
+
 	    // PA9 = TX (AF push-pull), PA10 = RX (input floating)
 	    GPIOA->CRH &= ~((0xF << (4 * 1)) | (0xF << (4 * 2))); // clear CNF/MODE for PA9, PA10
 	    GPIOA->CRH |=  (0xB << (4 * 1)); // PA9 = AF PP, 50 MHz
@@ -32,7 +34,10 @@ STATUS uart_init(uint32_t Baud_Rate){
 	    USART1->BRR = usartdiv;
 	    // Enable USART, TX, RX
 	    USART1->CR1 |= USART_CR1_UE | USART_CR1_TE | USART_CR1_RE;
-
+	    // 4. Configure DMA1 Channel4 for USART1_TX
+	       DMA1_Channel4->CCR = 0;            // Disable channel
+	       DMA1_Channel4->CPAR = (uint32_t)&USART1->DR; // Peripheral address
+	       DMA1_Channel4->CCR = DMA_CCR_DIR | DMA_CCR_MINC; // memory-to-periph, memory increment
 	    // Verify configuration
 	    if (!(USART1->CR1 & USART_CR1_UE)) {
 	        return RY_NOT_OK;
@@ -81,49 +86,6 @@ void uart_print_str(const char *str)
     	uart_print(*str++);
     }
 }
-void uart_send_double(double value, uint8_t decimal_places)
-{
-    char buf[32]; // Larger buffer for double
-    int i = 0;
-
-    // Handle negative
-    if (value < 0) {
-        buf[i++] = '-';
-        value = -value;
-    }
-
-    // Integer part
-    long long int_part = (long long)value;
-    double frac = value - (double)int_part;
-
-    // Convert integer part to string
-    char int_buf[20];
-    int j = 0;
-    do {
-        int_buf[j++] = '0' + (int_part % 10);
-        int_part /= 10;
-    } while (int_part > 0);
-
-    // Reverse digits into buf
-    for (int k = j - 1; k >= 0; k--) {
-        buf[i++] = int_buf[k];
-    }
-
-    buf[i++] = '.'; // decimal point
-
-    // Fractional part
-    for (int k = 0; k < decimal_places; k++) {
-        frac *= 10;
-        int digit = (int)frac;
-        buf[i++] = '0' + digit;
-        frac -= digit;
-    }
-
-    // Send string over UART
-    for (int k = 0; k < i; k++) {
-    	uart_print(buf[k]);
-    }
-}
 void uart_send1(const uint8_t *buf, size_t len) {
     for (size_t i = 0; i < len; ++i) {
         while (!(USART1->SR & (1U << 7))) { /* busy wait */ } // TXE bit
@@ -143,7 +105,8 @@ void uart_send(const uint8_t *buf, size_t len) {
 }
 void send_id_data_only_over_uart(const can_frame_t *f) {
     uint8_t buf[13];
-    /* send id always as 4 bytes (LE) so ESP32 can read little-endian uint32_t */
+    while (!(USART1->SR & (1U << 7))) { /* busy wait */ } // TXE bit
+    USART1->DR = (uint8_t)0XAA;
     buf[3] = (uint8_t)(f->id & 0xFF);
     buf[2] = (uint8_t)((f->id >> 8) & 0xFF);
     buf[1] = (uint8_t)((f->id >> 16) & 0xFF);
@@ -151,11 +114,11 @@ void send_id_data_only_over_uart(const can_frame_t *f) {
     buf[4] = f->dlc;
     /* copy 8 data bytes (if dlc<8 you still send 8 bytes - zeros ok) */
     for (int i = 0; i < 8; ++i) buf[5 + i] = f->data[i];
-    uart_send1(buf, sizeof(buf)); // 13 bytes
+    uart_send1(buf, sizeof(buf)/sizeof(buf[0])); // 13 bytes
 }
 void uart_printf(const char *format, ...)
 {
-    char buf[256];
+    uint8_t buf[500];
     va_list ap;
     va_start(ap, format);
     int n = vsnprintf(buf, sizeof(buf), format, ap);

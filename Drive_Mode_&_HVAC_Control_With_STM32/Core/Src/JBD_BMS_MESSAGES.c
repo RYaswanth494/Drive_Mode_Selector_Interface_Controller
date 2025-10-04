@@ -20,7 +20,7 @@ void decode_CAN_0x101(const uint8_t *data, CAN_BMS_0x101_t *msg) {
     msg->No_Cycles        = (data[2] << 8) | data[3];
     msg->RSOC          = (uint8_t)(((data[4] << 8) | data[5]) & 0xFF); // RSOC in %
     msg->CRC_Check        = (data[6] << 8) | data[7];
-    uart_printf("Full_Capacity=%.2f Ah RSOC=%d %\n\r",msg->Full_Capacity,(int)msg->RSOC);
+    uart_printf("Full_Capacity=%.2f Ah RSOC=%d %\n\r",msg->Full_Capacity,msg->RSOC);
 
 }
 void decode_CAN_Voltage(const uint8_t *data, uint16_t msg_id, CAN_BMS_Cell_Voltages_t *msg) {

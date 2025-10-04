@@ -41,7 +41,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-
+#define NODE_TIMEOUT 1500
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -52,6 +52,10 @@
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 uint32_t milli_sec_tick=0;
+volatile uint32_t mcu_connected = 0;
+volatile uint32_t bms_connected = 0;
+volatile uint32_t mcu_timer = 0;
+volatile uint32_t bms_timer = 0;
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
@@ -188,6 +192,22 @@ void SysTick_Handler(void)
   HAL_IncTick();
   /* USER CODE BEGIN SysTick_IRQn 1 */
   milli_sec_tick++;
+
+  if (mcu_timer < NODE_TIMEOUT)
+  {
+	  mcu_timer++;
+  }
+  else
+  {
+	  mcu_connected = 0;
+  }
+
+  if (bms_timer < NODE_TIMEOUT){
+	  bms_timer++;
+  }
+  else {
+	  bms_connected = 0;
+  }
   /* USER CODE END SysTick_IRQn 1 */
 }
 
