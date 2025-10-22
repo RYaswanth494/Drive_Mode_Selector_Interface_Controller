@@ -1,0 +1,5 @@
+../Core/Src/system_clock_init.c:8:8:system_clock_init_to_72MHZ	4
+../Core/Src/system_clock_init.c:31:10:get_SYSCLK_freq	8
+../Core/Src/system_clock_init.c:65:10:get_AHB_freq	1
+../Core/Src/system_clock_init.c:71:10:get_APB1_freq	1
+../Core/Src/system_clock_init.c:77:10:get_APB2_freq	1

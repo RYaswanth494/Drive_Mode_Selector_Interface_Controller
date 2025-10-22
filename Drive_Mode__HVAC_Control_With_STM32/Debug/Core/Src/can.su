@@ -1,0 +1,9 @@
+../Core/Src/can.c:22:8:set_baudrate	2064	static
+../Core/Src/can.c:54:6:Gpio_init	4	static
+../Core/Src/can.c:64:8:can_init	16	static
+../Core/Src/can.c:94:6:check_can_bus	16	static
+../Core/Src/can.c:113:6:send_can_data_frame	40	static
+../Core/Src/can.c:144:6:send_can_remote_frame	32	static
+../Core/Src/can.c:180:9:CAN_MessagePending	16	static
+../Core/Src/can.c:188:9:can_rx	24	static
+../Core/Src/can.c:221:10:can_recv_bulk	24	static

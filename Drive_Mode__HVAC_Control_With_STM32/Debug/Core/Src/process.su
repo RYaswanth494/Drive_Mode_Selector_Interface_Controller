@@ -1,0 +1,10 @@
+../Core/Src/process.c:28:9:crc8	24	static
+../Core/Src/process.c:39:7:find_smallest_float_in_single_pass	24	static
+../Core/Src/process.c:51:7:find_largest_element	24	static
+../Core/Src/process.c:63:6:Drive_mode_state	8	static
+../Core/Src/process.c:77:6:process_can_messages	24	static
+../Core/Src/process.c:98:6:process_switch_status	24	static
+../Core/Src/process.c:118:6:Request_Msgs_to_BMS	24	static
+../Core/Src/process.c:130:6:charger_relay_on_off	32	static
+../Core/Src/process.c:144:6:print_mcu_data	184	static
+../Core/Src/process.c:252:6:print_bms_data	128	static

@@ -1,7 +1,0 @@
-../Core/Src/process.c:26:9:crc8	24	static
-../Core/Src/process.c:37:6:Drive_mode_state	8	static
-../Core/Src/process.c:51:6:process_can_messages	24	static
-../Core/Src/process.c:125:6:process_switch_status	24	static
-../Core/Src/process.c:145:6:Request_Msgs_to_BMS	24	static
-../Core/Src/process.c:157:6:print_mcu_data	184	static
-../Core/Src/process.c:265:6:print_bms_data	128	static

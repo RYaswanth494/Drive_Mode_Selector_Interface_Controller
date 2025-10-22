@@ -1,0 +1,14 @@
+../Core/Src/JBD_BMS_MESSAGES.c:14:6:decode_CAN_0x100	1
+../Core/Src/JBD_BMS_MESSAGES.c:20:6:decode_CAN_0x101	1
+../Core/Src/JBD_BMS_MESSAGES.c:26:6:decode_CAN_Voltage	3
+../Core/Src/JBD_BMS_MESSAGES.c:42:6:decode_CAN_0x103	1
+../Core/Src/JBD_BMS_MESSAGES.c:52:6:decode_CAN_0x102	3
+../Core/Src/JBD_BMS_MESSAGES.c:68:6:decode_CAN_0x104	1
+../Core/Src/JBD_BMS_MESSAGES.c:77:6:decode_CAN_0x105	1
+../Core/Src/JBD_BMS_MESSAGES.c:93:6:decode_CAN_0x106	1
+../Core/Src/JBD_BMS_MESSAGES.c:108:6:decode_CAN_0x107	1
+../Core/Src/JBD_BMS_MESSAGES.c:121:6:decode_CAN_0x108	1
+../Core/Src/JBD_BMS_MESSAGES.c:135:6:decode_CAN_0x109	1
+../Core/Src/JBD_BMS_MESSAGES.c:149:6:decode_CAN_0x10A	1
+../Core/Src/JBD_BMS_MESSAGES.c:161:6:decode_CAN_0x10B	1
+../Core/Src/JBD_BMS_MESSAGES.c:173:6:decode_CAN_0x10C	1

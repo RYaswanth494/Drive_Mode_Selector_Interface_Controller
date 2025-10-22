@@ -1,0 +1,2 @@
+../Core/Src/JBD_BMS.c:13:6:jump_to_bootloader	6
+../Core/Src/JBD_BMS.c:26:6:Process_Jbd_Bms_Messages	17

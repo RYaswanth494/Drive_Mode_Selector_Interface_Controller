@@ -1,0 +1,2 @@
+../Core/Src/JBD_BMS.c:13:6:jump_to_bootloader	24	static,ignoring_inline_asm
+../Core/Src/JBD_BMS.c:26:6:Process_Jbd_Bms_Messages	16	static
